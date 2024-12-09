@@ -17,12 +17,17 @@
   <meta name="theme-color" media="(prefers-color-scheme: dark)" content="#000">
   <meta name="theme-color" content="#f9fafb">
   
-  <title>categories - 幻梦 の Blog</title>
+  <title>Windows文件资源管理器快捷访问一栏文件变英文解决办法 - 幻梦 の Blog</title>
 
   
-  <meta name="description" content="">
+  <meta name="description" content="问题先来看问题（如下图）可以发现Windows的文件资源管理器的“下载”目录变成了英文的  
+解决方法
+右键变成英文的快捷访问，点击属性，找到它的位置  
+然后右键在终端打开  
+在终端界面输入attrib +r Downloads，执行命令  
+右键任务栏，打开任务管理器，找到资源管理器，右...">
   
-  
+  <meta name="keywords" content="文章,WIndows,资源管理器">
 
   <!-- feed -->
   
@@ -37,7 +42,7 @@
 </head>
 <body>
 
-<div class="l_body s:aa content tech" id="start" layout="page" ><aside class="l_left"><div class="leftbar-container">
+<div class="l_body s:aa content tech" id="start" layout="post" ><aside class="l_left"><div class="leftbar-container">
 
 
 <header class="header"><div class="logo-wrap"><a class="avatar" href="https://huanmeng-official.github.io"><div class="bg" style="opacity:0;background-image:url(https://gcore.jsdelivr.net/gh/cdn-x/placeholder@1.0.12/avatar/round/rainbow64@3x.webp);"></div><img no-lazy class="avatar" src="https://huanmeng-official.github.io/assets/avatar.jpg" onerror="javascript:this.classList.add('error');this.src='https://gcore.jsdelivr.net/gh/cdn-x/placeholder@1.0.12/image/2659360.svg';"></a><a class="title" href="/"><div class="main" ff="title">幻梦 の Blog</div><div class="sub normal cap">少年没有乌托邦</div><div class="sub hover cap" style="opacity:0"> 心向远方自明朗</div></a></div></header>
@@ -49,6 +54,8 @@
 <nav class="menu dis-select"><a class="nav-item" title="哔哩哔哩" target="_blank" rel="noopener" href="https://space.bilibili.com/626446902/" style="color:#F44336"><i class="fa-brands fa-bilibili"></i></a><a class="nav-item" title="Github" target="_blank" rel="noopener" href="https://github.com/HuanMeng-official" style="color:#3DC550"><i class="fa-brands fa-github"></i></a><a class="nav-item" title="X" target="_blank" rel="noopener" href="https://x.com/HuanMeng_Sky/" style="color:#1BCDFC"><i class="fa-brands fa-x-twitter"></i></a><a class="nav-item" title="Steam" target="_blank" rel="noopener" href="https://steamcommunity.com/profiles/76561199234110352/" style="color:#FA6400"><i class="fa-brands fa-steam"></i></a></nav>
 </div>
 <div class="widgets">
+
+
 <widget class="widget-wrapper post-list"><div class="widget-header dis-select"><span class="name">最近更新</span></div><div class="widget-body fs14"><a class="item title" href="/posts/39147.html"><span class="title">Windows文件资源管理器快捷访问一栏文件变英文解决办法</span></a><a class="item title" href="/posts/59207.html"><span class="title">自我介绍</span></a></div></widget>
 </div>
 
@@ -61,29 +68,54 @@
 <div class="article banner top">
   <div class="content">
     <div class="top bread-nav footnote"><div class="left"><div class="flex-row" id="breadcrumb"><a class="cap breadcrumb" href="/">主页</a>
-
-  <span class="sep"></span>
-  <a class="cap breadcrumb" href="/categories/index.html">categories</a>
-  </div>
-<div class="flex-row" id="post-meta"><span class="text created">发布于：<time datetime="2024-12-09T05:21:14.000Z">2024-12-09</time></span><span class="sep updated"></span><span class="text updated">更新于：<time datetime="2024-12-09T05:21:14.952Z">2024-12-09</time></span></div></div></div>
+<span class="sep"></span><a class="cap breadcrumb" href="/">文章</a></div>
+<div class="flex-row" id="post-meta"><span class="text created">发布于：<time datetime="2024-12-09T05:49:43.000Z">2024-12-09</time></span><span class="sep updated"></span><span class="text updated">更新于：<time datetime="2024-12-09T06:06:29.544Z">2024-12-09</time></span></div></div></div>
     
     <div class="bottom only-title">
       
       <div class="text-area">
-        <h1 class="text title"><span>categories</span></h1>
+        <h1 class="text title"><span>Windows文件资源管理器快捷访问一栏文件变英文解决办法</span></h1>
         
       </div>
     </div>
     
   </div>
-  </div><article class="md-text content"></article>
+  </div><article class="md-text content"><h2 id="问题"><a href="#问题" class="headerlink" title="问题"></a>问题</h2><p>先来看问题（如下图）<br><img class="lazy" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAABGdBTUEAALGPC/xhBQAAADhlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAAqACAAQAAAABAAAAAaADAAQAAAABAAAAAQAAAADa6r/EAAAAC0lEQVQIHWNgAAIAAAUAAY27m/MAAAAASUVORK5CYII=" data-src="/../assets/jmdvu5b5.png" alt="1"><br>可以发现Windows的文件资源管理器的“下载”目录变成了英文的  </p>
+<h2 id="解决方法"><a href="#解决方法" class="headerlink" title="解决方法"></a>解决方法</h2><ol>
+<li>右键变成英文的快捷访问，点击<strong>属性</strong>，找到它的位置  </li>
+<li>然后右键在终端打开  </li>
+<li>在终端界面输入<code>attrib +r Downloads</code>，执行命令  </li>
+<li>右键任务栏，打开任务管理器，找到资源管理器，右键<strong>重新启动</strong>  </li>
+<li>打开文件资源管理器，恢复正常<br><img class="lazy" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAABGdBTUEAALGPC/xhBQAAADhlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAAqACAAQAAAABAAAAAaADAAQAAAABAAAAAQAAAADa6r/EAAAAC0lEQVQIHWNgAAIAAAUAAY27m/MAAAAASUVORK5CYII=" data-src="/../assets/neu25meo.png" alt="2"></li>
+</ol>
+<h2 id="补充"><a href="#补充" class="headerlink" title="补充"></a>补充</h2><p>没有安装终端的可以在地址栏输入cmd，打开cmd进行操作<br><img class="lazy" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAABGdBTUEAALGPC/xhBQAAADhlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAAqACAAQAAAABAAAAAaADAAQAAAABAAAAAQAAAADa6r/EAAAAC0lEQVQIHWNgAAIAAAUAAY27m/MAAAAASUVORK5CYII=" data-src="/../assets/hxpogyiq.png" alt="3"></p>
+
+<div class="article-footer fs14">
+    <section id="license">
+      <div class="header"><span>许可协议</span></div>
+      <div class="body"><p>本文采用 <a target="_blank" rel="noopener" href="https://creativecommons.org/licenses/by-nc-sa/4.0/">署名-非商业性使用-相同方式共享 4.0 国际</a> 许可协议，转载请注明出处。</p>
+</div>
+    </section>
+    </div>
+</article>
+<div class="related-wrap" id="read-next"><section class="body"><div class="item" id="prev"></div><div class="item" id="next"><div class="note">较早文章</div><a href="/posts/59207.html">自我介绍</a></div></section></div>
+
+
+
 
 
 
 <footer class="page-footer footnote"><hr><div class="text"><p>本站由 <a href="/">幻梦official</a> 使用 <a target="_blank" rel="noopener" href="https://github.com/xaoxuu/hexo-theme-stellar/tree/1.29.1">Stellar 1.29.1</a> 主题创建。<br>本博客所有文章除特别声明外，均采用 <a target="_blank" rel="noopener" href="https://creativecommons.org/licenses/by-nc-sa/4.0/">CC BY-NC-SA 4.0</a> 许可协议，转载请注明出处。</p>
 </div></footer>
 <div class="main-mask" onclick="sidebar.dismiss()"></div></div><aside class="l_right">
-</aside><div class='float-panel blur'>
+<div class="widgets">
+
+
+
+<widget class="widget-wrapper toc" id="data-toc" collapse="false"><div class="widget-header dis-select"><span class="name">本文目录</span><a class="cap-action" onclick="sidebar.toggleTOC()" ><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6h11m-11 6h11m-11 6h11M4 6h1v4m-1 0h2m0 8H4c0-1 2-2 2-3s-1-1.5-2-1"/></svg></a></div><div class="widget-body"><ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E9%97%AE%E9%A2%98"><span class="toc-text">问题</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%A7%A3%E5%86%B3%E6%96%B9%E6%B3%95"><span class="toc-text">解决方法</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%A1%A5%E5%85%85"><span class="toc-text">补充</span></a></li></ol></div><div class="widget-footer">
+
+<a class="top" onclick="util.scrollTop()"><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2 12c0-4.714 0-7.071 1.464-8.536C4.93 2 7.286 2 12 2c4.714 0 7.071 0 8.535 1.464C22 4.93 22 7.286 22 12c0 4.714 0 7.071-1.465 8.535C19.072 22 16.714 22 12 22s-7.071 0-8.536-1.465C2 19.072 2 16.714 2 12Z"/><path stroke-linecap="round" stroke-linejoin="round" d="m9 15.5l3-3l3 3m-6-4l3-3l3 3"/></g></svg><span>回到顶部</span></a></div></widget>
+</div></aside><div class='float-panel blur'>
   <button type='button' style='display:none' class='laptop-only rightbar-toggle mobile' onclick='sidebar.rightbar()'>
     <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6h11m-11 6h11m-11 6h11M4 6h1v4m-1 0h2m0 8H4c0-1 2-2 2-3s-1-1.5-2-1"/></svg>
   </button>
