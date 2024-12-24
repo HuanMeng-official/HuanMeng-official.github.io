@@ -4,7 +4,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="hexo-theme" content="https://github.com/xaoxuu/hexo-theme-stellar/tree/1.29.1" theme-name="Stellar" theme-version="1.29.1">
-  <meta name="robots" content="noindex,follow">
+  
   <meta name="generator" content="Hexo 7.3.0">
   <meta http-equiv='x-dns-prefetch-control' content='on' />
   
@@ -17,12 +17,13 @@
   <meta name="theme-color" media="(prefers-color-scheme: dark)" content="#000">
   <meta name="theme-color" content="#f9fafb">
   
-  <title>归档 - 幻梦 の Blog</title>
+  <title>Windows下的Rust环境搭建详解（MingW64） - 幻梦 の Blog</title>
 
   
-  <meta name="description" content="">
+  <meta name="description" content="一、介绍 Rust 语言Rust是一种系统编程语言，旨在提供高性能和内存安全性，它通过所有权系统（ownership system）管理内存，防止数据竞争、空指针引用和缓冲区溢出等常见错误。
+二、为什么要使用 MingW64对比MingW64和MSVC的优缺点：&nbsp;&nbsp;&nbs...">
   
-  
+  <meta name="keywords" content="rust,Windows">
 
   <!-- feed -->
   
@@ -37,7 +38,7 @@
 </head>
 <body>
 
-<div class="l_body s:aa index tech" id="start" layout="undefined" ><aside class="l_left"><div class="leftbar-container">
+<div class="l_body s:aa content tech" id="start" layout="post" ><aside class="l_left"><div class="leftbar-container">
 
 
 <header class="header"><div class="logo-wrap"><a class="avatar" href="https://huanmeng-official.github.io"><div class="bg" style="opacity:0;background-image:url(https://gcore.jsdelivr.net/gh/cdn-x/placeholder@1.0.12/avatar/round/rainbow64@3x.webp);"></div><img no-lazy class="avatar" src="https://huanmeng-official.github.io/assets/avatar.jpg" onerror="javascript:this.classList.add('error');this.src='https://gcore.jsdelivr.net/gh/cdn-x/placeholder@1.0.12/image/2659360.svg';"></a><a class="title" href="/"><div class="main" ff="title">幻梦 の Blog</div><div class="sub normal cap">少年没有乌托邦</div><div class="sub hover cap" style="opacity:0"> 心向远方自明朗</div></a></div></header>
@@ -49,21 +50,83 @@
 <nav class="menu dis-select"><a class="nav-item" title="哔哩哔哩" target="_blank" rel="noopener" href="https://space.bilibili.com/626446902/" style="color:#F44336"><i class="fa-brands fa-bilibili"></i></a><a class="nav-item" title="Github" target="_blank" rel="noopener" href="https://github.com/HuanMeng-official" style="color:#3DC550"><i class="fa-brands fa-github"></i></a><a class="nav-item" title="Book" href="/wiki/" style="color:#1BCDFC"><i class="fa-solid fa-book"></i></a><a class="nav-item" title="Steam" target="_blank" rel="noopener" href="https://steamcommunity.com/profiles/76561199234110352/" style="color:#FA6400"><i class="fa-brands fa-steam"></i></a></nav>
 </div>
 <div class="widgets">
+
+
 <widget class="widget-wrapper post-list"><div class="widget-header dis-select"><span class="name">最近更新</span></div><div class="widget-body fs14"><a class="item title" href="/posts/14881.html"><span class="title">Windows下的Rust环境搭建详解（MingW64）</span></a><a class="item title" href="/posts/39147.html"><span class="title">Windows文件资源管理器快捷访问一栏文件变英文解决办法</span></a><a class="item title" href="/posts/59207.html"><span class="title">自我介绍</span></a></div></widget>
 </div>
 
 </div></aside><div class="l_main" id="main">
 
-<header class="header mobile-only"><div class="logo-wrap"><a class="avatar" href="https://huanmeng-official.github.io"><div class="bg" style="opacity:0;background-image:url(https://gcore.jsdelivr.net/gh/cdn-x/placeholder@1.0.12/avatar/round/rainbow64@3x.webp);"></div><img no-lazy class="avatar" src="https://huanmeng-official.github.io/assets/avatar.jpg" onerror="javascript:this.classList.add('error');this.src='https://gcore.jsdelivr.net/gh/cdn-x/placeholder@1.0.12/image/2659360.svg';"></a><a class="title" href="/"><div class="main" ff="title">幻梦 の Blog</div><div class="sub normal cap">少年没有乌托邦</div><div class="sub hover cap" style="opacity:0"> 心向远方自明朗</div></a></div></header>
-
- 
 
 
-<div class="navbar top"><nav class="post"><a href="/">近期发布</a><a href="/tags">标签</a><a class="active" href="/archives">归档</a><a href="/categories/">分类</a></nav></div><div class="post-list archives"><article class="" id="archive"><div class='archive-header h4'>2024</div><div class="archive-list"><a class='post fs14' href="/posts/14881.html"><time>12-24</time><span>Windows下的Rust环境搭建详解（MingW64）</span></a></div><div class="archive-list"><a class='post fs14' href="/posts/39147.html"><time>12-09</time><span>Windows文件资源管理器快捷访问一栏文件变英文解决办法</span></a></div><div class="archive-list"><a class='post fs14' href="/posts/59207.html"><time>12-09</time><span>自我介绍</span></a></div></article></div>
+
+
+<div class="article banner top">
+  <div class="content">
+    <div class="top bread-nav footnote"><div class="left"><div class="flex-row" id="breadcrumb"><a class="cap breadcrumb" href="/">主页</a>
+<span class="sep"></span><a class="cap breadcrumb" href="/">文章</a></div>
+<div class="flex-row" id="post-meta"><span class="text created">发布于：<time datetime="2024-12-24T01:22:54.000Z">2024-12-24</time></span><span class="sep updated"></span><span class="text updated">更新于：<time datetime="2024-12-24T02:18:09.455Z">2024-12-24</time></span></div></div></div>
+    
+    <div class="bottom only-title">
+      
+      <div class="text-area">
+        <h1 class="text title"><span>Windows下的Rust环境搭建详解（MingW64）</span></h1>
+        
+      </div>
+    </div>
+    
+  </div>
+  </div><article class="md-text content"><h2 id="一、介绍-Rust-语言"><a href="#一、介绍-Rust-语言" class="headerlink" title="一、介绍 Rust 语言"></a>一、介绍 Rust 语言</h2><p>Rust是一种系统编程语言，旨在提供高性能和内存安全性，它通过所有权系统（<font color="Red">ownership system</font>）管理内存，防止数据竞争、空指针引用和缓冲区溢出等常见错误。</p>
+<h2 id="二、为什么要使用-MingW64"><a href="#二、为什么要使用-MingW64" class="headerlink" title="二、为什么要使用 MingW64"></a>二、为什么要使用 MingW64</h2><p>对比MingW64和MSVC的优缺点：<br>&nbsp;&nbsp;&nbsp;MingW64 优点和缺点：   </p>
+<ol>
+<li>开源：MingW64 遵循GNU公共通用许可证（GPL）<font color="Blue">开源</font>，而 MSVC 则是<font color="Blue">闭源</font>。</li>
+<li>跨平台兼容性：MingW64 支持 C&#x2F;C++&#x2F;Fortran 编译器，可以编译出可以在 Linux、macOS 等平台上运行的软件，而 MSVC 仅支持 Windows。</li>
+<li>轻量级：因为 MingW64 主要是基于 <font color="Blue">GCC</font> 的，它通常比 MSVC 更轻量级，占用磁盘空间较少。</li>
+<li>优化不如 MSVC：MingW64 可能不是 MSVC 那样优化过的编译环境，对某些性能敏感的应用程序可能有所不同。</li>
+<li>学习曲线较长：如果你没有 Linux 下的 GNU 工具链的经验，MingW64 可能需要更长时间来适应。</li>
+</ol>
+<p>&nbsp;&nbsp;&nbsp;MSVC 优缺点：  </p>
+<ol>
+<li>优化：MSVC 被设计用于优化 Windows 平台下的应用程序性能，尤其是在<font color="Blue">大型项目</font>中。</li>
+<li>集成环境：MSVC 提供了一个友好的 IDE（集成开发环境），使得开发人员可以更方便地管理和调试代码。</li>
+<li>闭源：MSVC 是微软开发的，它不是开源的，这使得用户无法自行定制和优化。</li>
+<li>占用磁盘空间较多：因为 MSVC 包含了大量的工具和库，它通常比 MingW64 占用更多的磁盘空间。</li>
+</ol>
+<p>通过对比我们得出结论：MSVC 太大，安装下来需要的时间长，占用的磁盘空间大，而且和 Visual Studio “深度绑定”，且 MSVC 不能跨平台开发，但是 MingW64 很好的解决了这个问题。</p>
+<h2 id="三、开始配置环境"><a href="#三、开始配置环境" class="headerlink" title="三、开始配置环境"></a>三、开始配置环境</h2><h3 id="准备工作：安装-MingW64"><a href="#准备工作：安装-MingW64" class="headerlink" title="准备工作：安装 MingW64"></a>准备工作：安装 MingW64</h3><p>安装 rust 前我们需要先安装 Mingw64，我们可以在 <a target="_blank" rel="noopener" href="https://winlibs.com/#download-release">WinLibs</a> 或 <a target="_blank" rel="noopener" href="https://github.com/niXman/mingw-builds-binaries/releases">Github</a> 里下载它。<br><img class="lazy" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAABGdBTUEAALGPC/xhBQAAADhlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAAqACAAQAAAABAAAAAaADAAQAAAABAAAAAQAAAADa6r/EAAAAC0lEQVQIHWNgAAIAAAUAAY27m/MAAAAASUVORK5CYII=" data-src="/../assets/0k4ntloj.png" alt="1"><br>下载下来后使用 7-zip 等软件解压，然后放到你常安装软件的目录，还没完，我们需要把 MingW64 添加到系统变量。<br><img class="lazy" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAABGdBTUEAALGPC/xhBQAAADhlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAAqACAAQAAAABAAAAAaADAAQAAAABAAAAAQAAAADa6r/EAAAAC0lEQVQIHWNgAAIAAAUAAY27m/MAAAAASUVORK5CYII=" data-src="/../assets/g7t3jy0n.png" alt="2"><br>输入 <code>gcc -v</code> 命令查看是否配置成功。</p>
+<h3 id="修改镜像源"><a href="#修改镜像源" class="headerlink" title="修改镜像源"></a>修改镜像源</h3><p>因为 Rust 的下载源在<font color="Red">国外</font>，我们经常会因为一些“不可抗拒的因素”无法下载成功，所以我们需要修改 Rust 的下载镜像。打开系统环境设置，添加两个系统变量:<br><code>RUSTUP_DIST_SERVER=https://mirrors.tuna.tsinghua.edu.cn/rustup</code><br><code>RUSTUP_UPDATE_ROOT=https://mirrors.tuna.tsinghua.edu.cn/rustup/rustup</code><br><img class="lazy" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAABGdBTUEAALGPC/xhBQAAADhlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAAqACAAQAAAABAAAAAaADAAQAAAABAAAAAQAAAADa6r/EAAAAC0lEQVQIHWNgAAIAAAUAAY27m/MAAAAASUVORK5CYII=" data-src="/../assets/sbdxpkwa.png" alt="3"></p>
+<h2 id="四、安装-Rust"><a href="#四、安装-Rust" class="headerlink" title="四、安装 Rust"></a>四、安装 Rust</h2><p>前面的准备工作已经做好了，现在我们需要下载 <font color="Blue">rust-init</font> 程序来安装 rust，rust-init 可以在 <a target="_blank" rel="noopener" href="https://www.rust-lang.org/">Rust官网</a> 中下载到，下载完毕后我们打开它，会看到如下界面:<br><img class="lazy" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAABGdBTUEAALGPC/xhBQAAADhlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAAqACAAQAAAABAAAAAaADAAQAAAABAAAAAQAAAADa6r/EAAAAC0lEQVQIHWNgAAIAAAUAAY27m/MAAAAASUVORK5CYII=" data-src="/../assets/7lnw09cp.png" alt="4"><br>因为我们是用 mingw64 所以我们需要选择 2 来自定义安装，输入 2 回车后进入一个确认界面，输入 y 后继续回车，如下图:<br><img class="lazy" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAABGdBTUEAALGPC/xhBQAAADhlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAAqACAAQAAAABAAAAAaADAAQAAAABAAAAAQAAAADa6r/EAAAAC0lEQVQIHWNgAAIAAAUAAY27m/MAAAAASUVORK5CYII=" data-src="/../assets/kuyrlthx.png" alt="5"><br>接下来它会输出一大堆信息，这时我们看到它默认是 <font color="Red">x86_64-pc-windows-msvc</font>，但是不要着急，接着选择自定义（2），如下图：<br><img class="lazy" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAABGdBTUEAALGPC/xhBQAAADhlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAAqACAAQAAAABAAAAAaADAAQAAAABAAAAAQAAAADa6r/EAAAAC0lEQVQIHWNgAAIAAAUAAY27m/MAAAAASUVORK5CYII=" data-src="/../assets/3xauz578.png" alt="6"><br>回车后会让你输入 <font color="Blue">host triple</font>，我们输入 <font color="Red">x86_64-pc-windows-gnu</font> 就可以了，然后下面的全部默认，修改完毕后如下图：<br><img class="lazy" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAABGdBTUEAALGPC/xhBQAAADhlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAAqACAAQAAAABAAAAAaADAAQAAAABAAAAAQAAAADa6r/EAAAAC0lEQVQIHWNgAAIAAAUAAY27m/MAAAAASUVORK5CYII=" data-src="/../assets/oo8oponl.png" alt="7"><br>看到这里就恭喜你完成大部分工作了，现在你只需要在上图这个修改好的界面中敲下回车即可安装 rust。<br>他会下载 rust-docs，rustc 等一系列组件，因为我们前面修改了下载镜像，所以下载过程不算慢。<br>等你安装完毕后，我们开一个新的命令行窗口输入 <code>rustc --version</code> 来验证安装。</p>
+<h2 id="五、配置-Cargo"><a href="#五、配置-Cargo" class="headerlink" title="五、配置 Cargo"></a>五、配置 Cargo</h2><p>我们在 C:&#x2F;Users&#x2F;{UserName}&#x2F;.cargo 目录下创建一个名为 config 的文件（没有后缀）<br>然后在这个文件中输入下方信息：  </p>
+<figure class="highlight ini"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="section">[source.crates-io]</span></span><br><span class="line"><span class="attr">registry</span> = <span class="string">&quot;https://github.com/rust-lang/crates.io-index&quot;</span></span><br><span class="line"><span class="attr">replace-with</span> = <span class="string">&#x27;ustc&#x27;</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 中国科学技术大学</span></span><br><span class="line"><span class="section">[source.ustc]</span></span><br><span class="line"><span class="attr">registry</span> = <span class="string">&quot;https://mirrors.ustc.edu.cn/crates.io-index&quot;</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 上海交通大学</span></span><br><span class="line"><span class="section">[source.sjtu]</span></span><br><span class="line"><span class="attr">registry</span> = <span class="string">&quot;https://mirrors.sjtug.sjtu.edu.cn/git/crates.io-index/&quot;</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 清华大学</span></span><br><span class="line"><span class="section">[source.tuna]</span></span><br><span class="line"><span class="attr">registry</span> = <span class="string">&quot;https://mirrors.tuna.tsinghua.edu.cn/git/crates.io-index.git&quot;</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># rustcc社区</span></span><br><span class="line"><span class="section">[source.rustcc]</span></span><br><span class="line"><span class="attr">registry</span> = <span class="string">&quot;https://code.aliyun.com/rustcc/crates.io-index.git&quot;</span></span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<p>这样就配置好了 Cargo 的镜像源。</p>
+<h2 id="六、安装完毕"><a href="#六、安装完毕" class="headerlink" title="六、安装完毕"></a>六、安装完毕</h2><p>尽情体验在 Windows 下的 Rust 开发吧！</p>
+
+<div class="article-footer fs14">
+    <section id="license">
+      <div class="header"><span>许可协议</span></div>
+      <div class="body"><p>本文采用 <a target="_blank" rel="noopener" href="https://creativecommons.org/licenses/by-nc-sa/4.0/">署名-非商业性使用-相同方式共享 4.0 国际</a> 许可协议，转载请注明出处。</p>
+</div>
+    </section>
+    </div>
+</article>
+<div class="related-wrap" id="read-next"><section class="body"><div class="item" id="prev"></div><div class="item" id="next"><div class="note">较早文章</div><a href="/posts/39147.html">Windows文件资源管理器快捷访问一栏文件变英文解决办法</a></div></section></div>
+
+
+
+
+
+
 <footer class="page-footer footnote"><hr><div class="text"><p>本博客部分素材来源于网络，如有侵权请联系 <a href="mailto:3099044113@qq.com">3099044113@qq.com</a> 删除<br>本博客所有文章除特别声明外，均采用 <a target="_blank" rel="noopener" href="https://creativecommons.org/licenses/by-nc-sa/4.0/">CC BY-NC-SA 4.0</a> 许可协议，转载请注明出处。</p>
 </div></footer>
 <div class="main-mask" onclick="sidebar.dismiss()"></div></div><aside class="l_right">
-</aside><div class='float-panel blur'>
+<div class="widgets">
+
+
+
+<widget class="widget-wrapper toc" id="data-toc" collapse="false"><div class="widget-header dis-select"><span class="name">本文目录</span><a class="cap-action" onclick="sidebar.toggleTOC()" ><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6h11m-11 6h11m-11 6h11M4 6h1v4m-1 0h2m0 8H4c0-1 2-2 2-3s-1-1.5-2-1"/></svg></a></div><div class="widget-body"><ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%B8%80%E3%80%81%E4%BB%8B%E7%BB%8D-Rust-%E8%AF%AD%E8%A8%80"><span class="toc-text">一、介绍 Rust 语言</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%BA%8C%E3%80%81%E4%B8%BA%E4%BB%80%E4%B9%88%E8%A6%81%E4%BD%BF%E7%94%A8-MingW64"><span class="toc-text">二、为什么要使用 MingW64</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%B8%89%E3%80%81%E5%BC%80%E5%A7%8B%E9%85%8D%E7%BD%AE%E7%8E%AF%E5%A2%83"><span class="toc-text">三、开始配置环境</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%87%86%E5%A4%87%E5%B7%A5%E4%BD%9C%EF%BC%9A%E5%AE%89%E8%A3%85-MingW64"><span class="toc-text">准备工作：安装 MingW64</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BF%AE%E6%94%B9%E9%95%9C%E5%83%8F%E6%BA%90"><span class="toc-text">修改镜像源</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%9B%9B%E3%80%81%E5%AE%89%E8%A3%85-Rust"><span class="toc-text">四、安装 Rust</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%BA%94%E3%80%81%E9%85%8D%E7%BD%AE-Cargo"><span class="toc-text">五、配置 Cargo</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%85%AD%E3%80%81%E5%AE%89%E8%A3%85%E5%AE%8C%E6%AF%95"><span class="toc-text">六、安装完毕</span></a></li></ol></div><div class="widget-footer">
+
+<a class="top" onclick="util.scrollTop()"><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2 12c0-4.714 0-7.071 1.464-8.536C4.93 2 7.286 2 12 2c4.714 0 7.071 0 8.535 1.464C22 4.93 22 7.286 22 12c0 4.714 0 7.071-1.465 8.535C19.072 22 16.714 22 12 22s-7.071 0-8.536-1.465C2 19.072 2 16.714 2 12Z"/><path stroke-linecap="round" stroke-linejoin="round" d="m9 15.5l3-3l3 3m-6-4l3-3l3 3"/></g></svg><span>回到顶部</span></a></div></widget>
+</div></aside><div class='float-panel blur'>
   <button type='button' style='display:none' class='laptop-only rightbar-toggle mobile' onclick='sidebar.rightbar()'>
     <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6h11m-11 6h11m-11 6h11M4 6h1v4m-1 0h2m0 8H4c0-1 2-2 2-3s-1-1.5-2-1"/></svg>
   </button>
