@@ -1,0 +1,350 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HuanMeng | Digital Craftsman</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- 引入 GSAP 动画库 (高级动画的核心) -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
+    <!-- 引入现代字体 Clash Display & Inter -->
+    <link href="https://api.fontshare.com/v2/css?f[]=clash-display@200,400,500,600&f[]=general-sans@200,400,500,600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <style>
+        :root {
+            --bg-color: #f3f3f1;
+            --text-main: #1a1a1a;
+            --accent: #2c2c2c;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            font-family: 'General Sans', sans-serif;
+            overflow-x: hidden;
+            cursor: none; /* 隐藏默认光标 */
+        }
+
+        h1, h2, h3, .brand-font {
+            font-family: 'Clash Display', sans-serif;
+        }
+
+        /* 噪点纹理叠加，增加高级质感 */
+        .noise-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 9999;
+            opacity: 0.05;
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
+        }
+
+        /* 自定义跟随光标 */
+        .custom-cursor {
+            width: 20px;
+            height: 20px;
+            background: #1a1a1a;
+            border-radius: 50%;
+            position: fixed;
+            pointer-events: none;
+            z-index: 10000;
+            mix-blend-mode: difference;
+            transition: width 0.3s, height 0.3s;
+            transform: translate(-50%, -50%);
+        }
+
+        /* Bento Grid 卡片样式 */
+        .bento-card {
+            background: #ffffff;
+            border-radius: 24px;
+            padding: 2rem;
+            border: 1px solid rgba(0,0,0,0.04);
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.02), 0 2px 4px -1px rgba(0, 0, 0, 0.02);
+            transition: transform 0.4s cubic-bezier(0.25, 1, 0.5, 1), box-shadow 0.4s ease;
+            overflow: hidden;
+            position: relative;
+        }
+        .bento-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.05), 0 10px 10px -5px rgba(0, 0, 0, 0.01);
+        }
+
+        /* 滚动条隐藏但可滚动 */
+        ::-webkit-scrollbar { width: 0px; background: transparent; }
+        
+        /* 跑马灯动画 */
+        .marquee-container { overflow: hidden; white-space: nowrap; }
+        .marquee-content { display: inline-block; animation: scroll 20s linear infinite; }
+        @keyframes scroll { from { transform: translateX(0); } to { transform: translateX(-50%); } }
+
+        /* 项目列表项 */
+        .project-item {
+            border-bottom: 1px solid #e5e5e5;
+            transition: background-color 0.3s;
+        }
+        .project-item:last-child { border-bottom: none; }
+        .project-item:hover { background-color: #fcfcfc; }
+        
+        .arrow-icon {
+            transform: rotate(-45deg); 
+            transition: transform 0.3s;
+        }
+        .project-item:hover .arrow-icon {
+            transform: rotate(0deg) translateX(5px);
+        }
+    </style>
+</head>
+<body class="antialiased">
+
+    <div class="noise-overlay"></div>
+    <div class="custom-cursor" id="cursor"></div>
+
+    <!-- 导航 -->
+    <nav class="fixed top-0 w-full px-8 py-6 flex justify-between items-center z-50 mix-blend-difference text-white">
+        <div class="text-xl font-bold brand-font tracking-wide">HUANMENG©</div>
+        <div class="text-sm font-medium tracking-widest uppercase opacity-70">2025 Portfolio</div>
+    </nav>
+
+    <main class="w-full max-w-7xl mx-auto px-6 pt-32 pb-20">
+        
+        <!-- Hero Section: 巨大的排版 -->
+        <header class="mb-24">
+            <h1 class="text-[10vw] leading-[0.9] font-semibold text-black mb-6 tracking-tighter reveal-text">
+                DIGITAL <br>
+                <span class="text-gray-400 italic font-light">CRAFTSMAN</span>
+            </h1>
+            <div class="flex flex-col md:flex-row justify-between items-end border-t border-black/10 pt-6">
+                <p class="max-w-md text-lg text-gray-600 leading-relaxed reveal-text">
+                    Hi, I'm <span id="name-display" class="text-black font-bold">HuanMeng</span>. 
+                    <br>A developer creating minimalist, high-performance digital experiences. Based in GitHub.
+                </p>
+                <div class="mt-8 md:mt-0 flex gap-4 reveal-text">
+                    <a href="#work" class="px-6 py-3 bg-black text-white rounded-full text-sm font-medium hover:bg-gray-800 transition">View Work</a>
+                    <a href="https://github.com/HuanMeng-official" target="_blank" class="px-6 py-3 border border-black/10 rounded-full text-sm font-medium hover:bg-white transition">GitHub</a>
+                </div>
+            </div>
+        </header>
+
+        <!-- Bento Grid 布局: 模块化展示 -->
+        <section id="bento" class="grid grid-cols-1 md:grid-cols-3 md:grid-rows-2 gap-6 h-auto md:h-[600px] mb-32">
+            
+            <!-- 1. Profile Card (占据 1/3) -->
+            <div class="bento-card md:row-span-2 flex flex-col justify-between group">
+                <div>
+                    <div class="w-20 h-20 rounded-full overflow-hidden mb-6 border border-gray-100">
+                        <img id="avatar" src="" alt="Avatar" class="w-full h-full object-cover filter grayscale group-hover:grayscale-0 transition duration-500">
+                    </div>
+                    <h3 class="text-3xl font-medium mb-2">About Me</h3>
+                    <p id="bio" class="text-gray-500 text-sm leading-6">Loading bio data from GitHub...</p>
+                </div>
+                <div class="mt-8">
+                    <div class="text-xs uppercase tracking-widest text-gray-400 mb-2">Location</div>
+                    <div id="location" class="font-medium">Earth, Solar System</div>
+                </div>
+            </div>
+
+            <!-- 2. Stats Card (占据 1/3) -->
+            <div class="bento-card bg-[#1a1a1a] text-white flex flex-col justify-center items-center text-center relative overflow-hidden">
+                <div class="absolute inset-0 bg-gradient-to-tr from-white/5 to-transparent"></div>
+                <div class="grid grid-cols-2 gap-8 w-full z-10">
+                    <div>
+                        <div id="followers" class="text-4xl font-bold mb-1">-</div>
+                        <div class="text-xs text-gray-400 uppercase">Followers</div>
+                    </div>
+                    <div>
+                        <div id="repos-count" class="text-4xl font-bold mb-1">-</div>
+                        <div class="text-xs text-gray-400 uppercase">Repos</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 3. Tech Stack Marquee (占据 1/3) -->
+            <div class="bento-card flex flex-col justify-center overflow-hidden bg-gray-50 border-none">
+                <div class="text-xs uppercase tracking-widest text-gray-400 mb-4 text-center">Tech Stack</div>
+                <div class="marquee-container opacity-60 grayscale hover:grayscale-0 transition duration-500">
+                    <div class="marquee-content text-4xl space-x-8 font-bold text-gray-300">
+                        <i class="fab fa-js"></i> <i class="fab fa-react"></i> <i class="fab fa-vuejs"></i> <i class="fab fa-python"></i> 
+                        <i class="fab fa-node"></i> <i class="fab fa-html5"></i> <i class="fab fa-css3"></i> <i class="fab fa-docker"></i>
+                        <i class="fab fa-git-alt"></i> <i class="fab fa-rust"></i>
+                        <!-- Duplicate for seamless loop -->
+                        <i class="fab fa-js"></i> <i class="fab fa-react"></i> <i class="fab fa-vuejs"></i> <i class="fab fa-python"></i> 
+                    </div>
+                </div>
+            </div>
+
+            <!-- 4. GitHub Contribution Graph (占据 2/3 宽度) -->
+            <div class="bento-card md:col-span-2 relative flex items-center justify-center p-0 overflow-hidden bg-white">
+                <div class="absolute top-4 left-6 z-10">
+                    <h3 class="text-lg font-medium">Contributions</h3>
+                    <p class="text-xs text-gray-400">Past Year Activity</p>
+                </div>
+                <!-- 调用 API 生成图表，使用浅色主题 -->
+                <img src="https://ghchart.rshah.org/1a1a1a/HuanMeng-official" alt="Contribution Graph" class="w-full object-cover opacity-80 scale-105 hover:scale-100 transition duration-700">
+            </div>
+
+        </section>
+
+        <!-- Projects List: 极简列表风格 -->
+        <section id="work" class="mb-20">
+            <div class="flex items-end justify-between mb-12 border-b border-black w-full pb-4">
+                <h2 class="text-5xl font-medium">Selected Works</h2>
+                <span class="text-sm font-mono">(01 — 06)</span>
+            </div>
+
+            <div id="project-list" class="flex flex-col">
+                <!-- JS 自动生成列表项 -->
+            </div>
+            
+            <div class="mt-12 text-center">
+                 <a href="https://github.com/HuanMeng-official?tab=repositories" target="_blank" class="inline-flex items-center gap-2 text-sm uppercase tracking-widest hover:underline underline-offset-4">
+                    View All Repositories <i class="fas fa-arrow-right"></i>
+                 </a>
+            </div>
+        </section>
+
+    </main>
+
+    <footer class="bg-[#1a1a1a] text-white py-20 px-6">
+        <div class="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-start">
+            <div>
+                <h2 class="text-[5vw] brand-font leading-none mb-6">Let's create <br>something new.</h2>
+            </div>
+            <div class="flex flex-col space-y-4 text-right">
+                <a href="https://github.com/HuanMeng-official" class="text-2xl hover:text-gray-400 transition">GitHub ↗</a>
+                <a href="mailto:email@example.com" class="text-2xl hover:text-gray-400 transition">Email ↗</a>
+                <div class="text-gray-500 text-sm mt-12">© 2025 HuanMeng. All Rights Reserved.</div>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // 1. 自定义光标逻辑
+        const cursor = document.getElementById('cursor');
+        
+        document.addEventListener('mousemove', (e) => {
+            gsap.to(cursor, {
+                x: e.clientX,
+                y: e.clientY,
+                duration: 0.1,
+                ease: "power2.out"
+            });
+        });
+
+        // 鼠标悬停放大效果
+        const links = document.querySelectorAll('a, .bento-card');
+        links.forEach(link => {
+            link.addEventListener('mouseenter', () => {
+                gsap.to(cursor, { scale: 3, duration: 0.3 });
+            });
+            link.addEventListener('mouseleave', () => {
+                gsap.to(cursor, { scale: 1, duration: 0.3 });
+            });
+        });
+
+        // 2. GSAP 入场动画
+        gsap.registerPlugin(ScrollTrigger);
+
+        // 头部文字 Reveal
+        gsap.from(".reveal-text", {
+            y: 100,
+            opacity: 0,
+            duration: 1.5,
+            stagger: 0.2,
+            ease: "power4.out",
+            delay: 0.2
+        });
+
+        // Bento Grid 依次浮现
+        gsap.from(".bento-card", {
+            scrollTrigger: {
+                trigger: "#bento",
+                start: "top 80%",
+            },
+            y: 50,
+            opacity: 0,
+            duration: 1,
+            stagger: 0.1,
+            ease: "power3.out"
+        });
+
+        // 3. GitHub API 数据加载
+        const USERNAME = 'HuanMeng-official';
+
+        async function initData() {
+            try {
+                const userRes = await fetch(`https://api.github.com/users/${USERNAME}`);
+                const userData = await userRes.json();
+                
+                if (userData.name) document.getElementById('name-display').innerText = userData.name;
+                document.getElementById('avatar').src = userData.avatar_url;
+                document.getElementById('bio').innerText = userData.bio || "Front-end developer & UI/UX enthusiast. Crafting clean code and pixel-perfect interfaces.";
+                if(userData.location) document.getElementById('location').innerText = userData.location;
+                document.getElementById('followers').innerText = userData.followers;
+                document.getElementById('repos-count').innerText = userData.public_repos;
+
+                // 获取项目
+                const repoRes = await fetch(`https://api.github.com/users/${USERNAME}/repos?sort=updated&per_page=5`);
+                const repos = await repoRes.json();
+                const listContainer = document.getElementById('project-list');
+
+                repos.forEach((repo, index) => {
+                    const item = document.createElement('a');
+                    item.href = repo.html_url;
+                    item.target = "_blank";
+                    item.className = "project-item block py-8 group cursor-none"; // 保持自定义光标可见
+                    
+                    // 格式化日期
+                    const date = new Date(repo.updated_at).getFullYear();
+                    
+                    item.innerHTML = `
+                        <div class="flex items-center justify-between px-4">
+                            <div class="flex items-baseline gap-8 md:gap-16">
+                                <span class="text-xs font-mono text-gray-400">0${index + 1}</span>
+                                <div>
+                                    <h3 class="text-2xl md:text-3xl font-medium mb-1 group-hover:translate-x-2 transition duration-300 brand-font">${repo.name}</h3>
+                                    <p class="text-gray-500 text-sm hidden md:block max-w-md">${repo.description || 'No description available.'}</p>
+                                </div>
+                            </div>
+                            <div class="flex items-center gap-8">
+                                <span class="text-xs font-mono border border-gray-200 px-2 py-1 rounded text-gray-500 uppercase">${repo.language || 'Code'}</span>
+                                <span class="text-sm font-mono text-gray-400 hidden md:block">${date}</span>
+                                <i class="fas fa-arrow-right text-xl arrow-icon text-gray-300 group-hover:text-black"></i>
+                            </div>
+                        </div>
+                    `;
+                    
+                    // 添加项目列表的动画触发
+                    listContainer.appendChild(item);
+                    
+                    // 为新加的元素绑定光标事件
+                    item.addEventListener('mouseenter', () => gsap.to(cursor, { scale: 3, backgroundColor: "transparent", border: "1px solid #000" }));
+                    item.addEventListener('mouseleave', () => gsap.to(cursor, { scale: 1, backgroundColor: "#1a1a1a", border: "none" }));
+                });
+
+                // 项目列表入场动画
+                gsap.from(".project-item", {
+                    scrollTrigger: {
+                        trigger: "#project-list",
+                        start: "top 80%",
+                    },
+                    y: 30,
+                    opacity: 0,
+                    duration: 0.8,
+                    stagger: 0.1,
+                    ease: "power2.out"
+                });
+
+            } catch (e) {
+                console.error("API Error", e);
+            }
+        }
+
+        initData();
+    </script>
+</body>
+</html>
