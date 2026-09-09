@@ -1,0 +1,1449 @@
+<!DOCTYPE html>
+<html lang="zh-CN" data-theme="light">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>svg2png</title>
+  <style>
+    :root {
+      --bg: #0d0f14;
+      --bg-gradient: radial-gradient(circle at 15% 15%, rgba(0, 113, 227, 0.15) 0%, transparent 40%),
+                          radial-gradient(circle at 85% 85%, rgba(142, 68, 237, 0.12) 0%, transparent 45%),
+                          radial-gradient(circle at 50% 50%, rgba(30, 35, 55, 0.4) 0%, transparent 100%);
+      --card-bg: rgba(22, 24, 32, 0.75);
+      --card-border: rgba(255, 255, 255, 0.08);
+      --card-border-hover: rgba(255, 255, 255, 0.18);
+      --input-bg: rgba(255, 255, 255, 0.04);
+      --input-border: rgba(255, 255, 255, 0.1);
+      --input-focus: #0a84ff;
+      --text-main: #f5f5f7;
+      --text-muted: #86868b;
+      --accent: #0071e3;
+      --accent-hover: #0077ed;
+      --accent-glow: rgba(0, 113, 227, 0.35);
+      --preset-bg: rgba(255, 255, 255, 0.06);
+      --preset-hover: rgba(255, 255, 255, 0.12);
+      --checker-1: rgba(255, 255, 255, 0.05);
+      --checker-2: transparent;
+      --shadow: 0 20px 40px -15px rgba(0, 0, 0, 0.5);
+    }
+
+    [data-theme="light"] {
+      --bg: #f5f5f7;
+      --bg-gradient: radial-gradient(circle at 20% 20%, rgba(0, 113, 227, 0.08) 0%, transparent 45%),
+                          radial-gradient(circle at 80% 80%, rgba(142, 68, 237, 0.06) 0%, transparent 45%);
+      --card-bg: rgba(255, 255, 255, 0.85);
+      --card-border: rgba(0, 0, 0, 0.06);
+      --card-border-hover: rgba(0, 0, 0, 0.15);
+      --input-bg: rgba(0, 0, 0, 0.03);
+      --input-border: rgba(0, 0, 0, 0.1);
+      --input-focus: #0071e3;
+      --text-main: #1d1d1f;
+      --text-muted: #86868b;
+      --accent: #0071e3;
+      --accent-hover: #0077ed;
+      --accent-glow: rgba(0, 113, 227, 0.25);
+      --preset-bg: rgba(0, 0, 0, 0.04);
+      --preset-hover: rgba(0, 0, 0, 0.08);
+      --checker-1: rgba(0, 0, 0, 0.04);
+      --checker-2: transparent;
+      --shadow: 0 20px 40px -15px rgba(0, 0, 0, 0.08);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Text", "Segoe UI", Roboto, "PingFang SC", "Helvetica Neue", sans-serif;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    body {
+      background-color: var(--bg);
+      background-image: var(--bg-gradient);
+      background-attachment: fixed;
+      color: var(--text-main);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 32px 16px;
+      transition: background 0.3s ease, color 0.3s ease;
+    }
+
+    .container {
+      width: 100%;
+      max-width: 1120px;
+      display: flex;
+      flex-direction: column;
+      gap: 24px;
+    }
+
+    /* 顶部导航栏 */
+    header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 8px 4px;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .brand-icon {
+      width: 38px;
+      height: 38px;
+      border-radius: 10px;
+      background: linear-gradient(135deg, #0071e3, #60a5fa);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 8px 18px var(--accent-glow);
+    }
+
+    .brand-icon svg {
+      width: 22px;
+      height: 22px;
+      fill: #ffffff;
+    }
+
+    .brand-title {
+      font-size: 20px;
+      font-weight: 600;
+      letter-spacing: -0.5px;
+    }
+
+    .brand-tag {
+      font-size: 11px;
+      color: var(--text-muted);
+      background: var(--input-bg);
+      border: 1px solid var(--input-border);
+      padding: 2px 8px;
+      border-radius: 12px;
+      margin-left: 8px;
+      font-weight: 400;
+    }
+
+    .header-actions {
+      display: flex;
+      gap: 10px;
+      align-items: center;
+    }
+
+    .icon-btn {
+      width: 36px;
+      height: 36px;
+      border-radius: 18px;
+      border: 1px solid var(--input-border);
+      background: var(--card-bg);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      color: var(--text-main);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    .icon-btn:hover {
+      transform: scale(1.05);
+      border-color: var(--card-border-hover);
+    }
+
+    /* 主网格布局 */
+    .app-grid {
+      display: grid;
+      grid-template-columns: 1.05fr 1fr;
+      gap: 24px;
+    }
+
+    @media (max-width: 860px) {
+      .app-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    /* 卡片通用样式 */
+    .card {
+      background: var(--card-bg);
+      backdrop-filter: blur(28px);
+      -webkit-backdrop-filter: blur(28px);
+      border: 1px solid var(--card-border);
+      border-radius: 20px;
+      padding: 24px;
+      box-shadow: var(--shadow);
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+      transition: border-color 0.25s ease;
+    }
+
+    .card:hover {
+      border-color: var(--card-border-hover);
+    }
+
+    .card-title {
+      font-size: 15px;
+      font-weight: 600;
+      color: var(--text-muted);
+      letter-spacing: -0.2px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    /* 上传区域 */
+    .drop-zone {
+      border: 2px dashed var(--input-border);
+      border-radius: 16px;
+      padding: 26px 20px;
+      text-align: center;
+      cursor: pointer;
+      transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 12px;
+      background: var(--input-bg);
+      position: relative;
+    }
+
+    .drop-zone:hover, .drop-zone.dragover {
+      border-color: var(--input-focus);
+      background: rgba(0, 113, 227, 0.05);
+      transform: translateY(-1px);
+    }
+
+    .drop-zone-icon {
+      width: 44px;
+      height: 44px;
+      border-radius: 12px;
+      background: var(--preset-bg);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--text-muted);
+    }
+
+    .drop-zone-text {
+      font-size: 14px;
+      font-weight: 500;
+    }
+
+    .drop-zone-sub {
+      font-size: 12px;
+      color: var(--text-muted);
+    }
+
+    #fileInput {
+      display: none;
+    }
+
+    .sub-tools {
+      display: flex;
+      gap: 8px;
+      width: 100%;
+    }
+
+    .ghost-btn {
+      flex: 1;
+      padding: 8px 12px;
+      border-radius: 10px;
+      font-size: 12px;
+      font-weight: 500;
+      border: 1px solid var(--input-border);
+      background: var(--input-bg);
+      color: var(--text-main);
+      cursor: pointer;
+      transition: all 0.2s;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+    }
+
+    .ghost-btn:hover {
+      background: var(--preset-hover);
+      border-color: var(--card-border-hover);
+    }
+
+    /* 尺寸参数配置 */
+    .config-section {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    .dimension-row {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .input-field {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .input-header-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .input-label {
+      font-size: 11px;
+      font-weight: 600;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .mini-btn-group {
+      display: flex;
+      gap: 4px;
+    }
+
+    .mini-btn {
+      padding: 2px 7px;
+      font-size: 11px;
+      font-weight: 600;
+      border-radius: 6px;
+      border: 1px solid var(--input-border);
+      background: var(--input-bg);
+      color: var(--text-main);
+      cursor: pointer;
+      transition: all 0.15s ease;
+    }
+
+    .mini-btn:hover {
+      background: var(--preset-hover);
+      border-color: var(--card-border-hover);
+      transform: scale(1.04);
+    }
+
+    .number-input-wrapper {
+      position: relative;
+      display: flex;
+      align-items: center;
+    }
+
+    .styled-input {
+      width: 100%;
+      height: 40px;
+      padding: 0 34px 0 12px;
+      border-radius: 10px;
+      border: 1px solid var(--input-border);
+      background: var(--input-bg);
+      color: var(--text-main);
+      font-size: 15px;
+      font-weight: 500;
+      outline: none;
+      transition: all 0.2s;
+    }
+
+    .styled-input:focus {
+      border-color: var(--input-focus);
+      box-shadow: 0 0 0 3px rgba(0, 113, 227, 0.2);
+    }
+
+    .input-unit {
+      position: absolute;
+      right: 12px;
+      font-size: 12px;
+      color: var(--text-muted);
+      pointer-events: none;
+    }
+
+    .ratio-lock-btn {
+      width: 40px;
+      height: 40px;
+      margin-top: 18px;
+      border-radius: 10px;
+      border: 1px solid var(--input-border);
+      background: var(--input-bg);
+      color: var(--text-muted);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .ratio-lock-btn.locked {
+      background: rgba(0, 113, 227, 0.15);
+      border-color: var(--input-focus);
+      color: var(--input-focus);
+    }
+
+    /* 预设与缩放标签 */
+    .chip-group {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+    }
+
+    .chip {
+      padding: 6px 12px;
+      font-size: 12px;
+      font-weight: 500;
+      border-radius: 8px;
+      background: var(--preset-bg);
+      color: var(--text-main);
+      cursor: pointer;
+      border: 1px solid transparent;
+      transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+      user-select: none;
+    }
+
+    .chip:hover {
+      background: var(--preset-hover);
+      border-color: var(--card-border-hover);
+    }
+
+    .chip.active {
+      background: var(--accent);
+      color: #ffffff;
+      box-shadow: 0 2px 8px var(--accent-glow);
+      font-weight: 600;
+    }
+
+    /* 背景填充选项 */
+    .segmented-control {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      background: var(--input-bg);
+      border: 1px solid var(--input-border);
+      border-radius: 10px;
+      padding: 3px;
+      gap: 4px;
+    }
+
+    .segment-btn {
+      padding: 6px 0;
+      font-size: 12px;
+      font-weight: 500;
+      color: var(--text-muted);
+      border: none;
+      background: transparent;
+      border-radius: 7px;
+      cursor: pointer;
+      transition: all 0.2s;
+      text-align: center;
+    }
+
+    .segment-btn.active {
+      background: var(--card-bg);
+      color: var(--text-main);
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+    }
+
+    .custom-color-row {
+      display: none;
+      align-items: center;
+      gap: 10px;
+      margin-top: 4px;
+    }
+
+    .custom-color-row.show {
+      display: flex;
+    }
+
+    .color-picker {
+      -webkit-appearance: none;
+      border: none;
+      width: 32px;
+      height: 32px;
+      border-radius: 8px;
+      cursor: pointer;
+      background: transparent;
+    }
+
+    .color-picker::-webkit-color-swatch-wrapper {
+      padding: 0;
+    }
+
+    .color-picker::-webkit-color-swatch {
+      border: 1px solid var(--input-border);
+      border-radius: 8px;
+    }
+
+    /* 动作按钮组 */
+    .action-group {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      margin-top: 4px;
+    }
+
+    .primary-btn {
+      width: 100%;
+      height: 46px;
+      border-radius: 12px;
+      border: none;
+      background: var(--accent);
+      color: #ffffff;
+      font-size: 15px;
+      font-weight: 600;
+      cursor: pointer;
+      box-shadow: 0 8px 24px var(--accent-glow);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    .primary-btn:hover {
+      background: var(--accent-hover);
+      transform: translateY(-1px);
+      box-shadow: 0 12px 28px var(--accent-glow);
+    }
+
+    .primary-btn:active {
+      transform: scale(0.98);
+    }
+
+    .secondary-btn {
+      width: 100%;
+      height: 40px;
+      border-radius: 12px;
+      border: 1px solid var(--input-border);
+      background: var(--input-bg);
+      color: var(--text-main);
+      font-size: 13px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .secondary-btn:hover {
+      background: var(--preset-hover);
+      border-color: var(--card-border-hover);
+    }
+
+    /* 右侧预览区 */
+    .preview-container {
+      display: flex;
+      flex-direction: column;
+      height: 100%;
+      gap: 16px;
+    }
+
+    .preview-box {
+      flex: 1;
+      min-height: 400px;
+      max-height: 480px;
+      border-radius: 16px;
+      border: 1px solid var(--input-border);
+      display: flex;
+      flex-direction: column;
+      position: relative;
+      overflow: hidden;
+      background-image: 
+        linear-gradient(45deg, var(--checker-1) 25%, transparent 25%), 
+        linear-gradient(-45deg, var(--checker-1) 25%, transparent 25%), 
+        linear-gradient(45deg, transparent 75%, var(--checker-1) 75%), 
+        linear-gradient(-45deg, transparent 75%, var(--checker-1) 75%);
+      background-size: 20px 20px;
+      background-position: 0 0, 0 10px, 10px -10px, -10px 0px;
+    }
+
+    .preview-toolbar {
+      position: absolute;
+      top: 12px;
+      left: 12px;
+      right: 12px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      z-index: 10;
+      pointer-events: none;
+    }
+
+    .preview-toolbar > * {
+      pointer-events: auto;
+    }
+
+    .view-mode-toggle {
+      display: flex;
+      background: var(--card-bg);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border: 1px solid var(--input-border);
+      border-radius: 8px;
+      padding: 2px;
+      gap: 2px;
+    }
+
+    .mode-btn {
+      padding: 4px 10px;
+      font-size: 11px;
+      font-weight: 500;
+      border: none;
+      background: transparent;
+      color: var(--text-muted);
+      border-radius: 6px;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .mode-btn.active {
+      background: var(--preset-hover);
+      color: var(--text-main);
+      font-weight: 600;
+    }
+
+    .quick-copy {
+      background: var(--card-bg);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border: 1px solid var(--input-border);
+      border-radius: 8px;
+      padding: 6px 12px;
+      font-size: 12px;
+      font-weight: 500;
+      color: var(--text-main);
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .quick-copy:hover {
+      border-color: var(--card-border-hover);
+      transform: scale(1.02);
+    }
+
+    .preview-canvas-wrapper {
+      flex: 1;
+      width: 100%;
+      height: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: auto;
+      padding: 50px 20px 20px 20px;
+    }
+
+    /* 适应视图模式与 1:1 实际尺寸模式 */
+    .preview-canvas-wrapper.fit-mode #previewCanvas {
+      max-width: 90%;
+      max-height: 330px;
+      object-fit: contain;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.25);
+      border-radius: 10px;
+      transition: max-width 0.2s ease, max-height 0.2s ease;
+    }
+
+    .preview-canvas-wrapper.actual-mode #previewCanvas {
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.25);
+      border-radius: 10px;
+      margin: auto;
+    }
+
+    .preview-meta {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      font-size: 12px;
+      color: var(--text-muted);
+      padding: 0 4px;
+    }
+
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      padding: 4px 10px;
+      background: var(--input-bg);
+      border: 1px solid var(--input-border);
+      border-radius: 6px;
+      font-size: 12px;
+      font-family: monospace;
+      font-weight: 600;
+      color: var(--text-main);
+      transition: all 0.25s ease;
+    }
+
+    @keyframes badgePulse {
+      0% { transform: scale(1); border-color: var(--input-focus); }
+      50% { transform: scale(1.08); background: rgba(0, 113, 227, 0.25); }
+      100% { transform: scale(1); }
+    }
+
+    .badge.pulse {
+      animation: badgePulse 0.3s ease;
+    }
+
+    /* 代码粘贴弹窗 */
+    .modal-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      background: rgba(0, 0, 0, 0.5);
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      z-index: 999;
+      opacity: 0;
+      transition: opacity 0.2s ease;
+    }
+
+    .modal-overlay.show {
+      display: flex;
+      opacity: 1;
+    }
+
+    .modal {
+      width: 90%;
+      max-width: 560px;
+      background: var(--card-bg);
+      backdrop-filter: blur(30px);
+      -webkit-backdrop-filter: blur(30px);
+      border: 1px solid var(--card-border);
+      border-radius: 20px;
+      padding: 24px;
+      box-shadow: var(--shadow);
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+      transform: scale(0.95);
+      transition: transform 0.2s ease;
+    }
+
+    .modal-overlay.show .modal {
+      transform: scale(1);
+    }
+
+    .svg-textarea {
+      width: 100%;
+      height: 180px;
+      background: var(--input-bg);
+      border: 1px solid var(--input-border);
+      border-radius: 12px;
+      padding: 12px;
+      font-family: monospace;
+      font-size: 12px;
+      color: var(--text-main);
+      outline: none;
+      resize: none;
+    }
+
+    .svg-textarea:focus {
+      border-color: var(--input-focus);
+    }
+
+    /* 浮动提示条 (Toast) */
+    .toast {
+      position: fixed;
+      top: 24px;
+      background: var(--card-bg);
+      backdrop-filter: blur(24px);
+      -webkit-backdrop-filter: blur(24px);
+      border: 1px solid var(--card-border);
+      color: var(--text-main);
+      padding: 10px 18px;
+      border-radius: 30px;
+      font-size: 13px;
+      font-weight: 500;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+      transform: translateY(-50px);
+      opacity: 0;
+      transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+      z-index: 1000;
+      pointer-events: none;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .toast.show {
+      transform: translateY(0);
+      opacity: 1;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="toast" id="toast">
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6L9 17l-5-5"/></svg>
+    <span id="toastMsg">提示信息</span>
+  </div>
+
+  <div class="container">
+    <!-- 头部导航 -->
+    <header>
+      <div class="brand">
+        <div class="brand-icon">
+          <svg viewBox="0 0 24 24"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 16H5V5h14v14zm-5.04-6.71l-2.75 3.54-1.96-2.36L6.5 17h11l-3.54-4.71z"/></svg>
+        </div>
+        <div>
+          <span class="brand-title">SVG Converter</span>
+          <span class="brand-tag">Ultra Quality</span>
+        </div>
+      </div>
+      <div class="header-actions">
+        <button class="icon-btn" id="themeToggle" title="切换深/浅色模式">
+          <svg id="themeIcon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="5"/><path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/></svg>
+        </button>
+      </div>
+    </header>
+
+    <!-- 主交互区域 -->
+    <div class="app-grid">
+      
+      <!-- 左侧：参数与操作 -->
+      <div class="card">
+        <div class="card-title">
+          <span>输入 SVG</span>
+          <span id="fileInfoText" style="font-weight: 400; font-size: 12px;">默认图标</span>
+        </div>
+
+        <!-- 上传拖拽区 -->
+        <div class="drop-zone" id="dropZone">
+          <div class="drop-zone-icon">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+          </div>
+          <div>
+            <div class="drop-zone-text">拖放 SVG 文件至此处，或点击浏览</div>
+            <div class="drop-zone-sub">目前仅支持 svg 格式</div>
+          </div>
+          <input type="file" id="fileInput" accept=".svg,image/svg+xml">
+        </div>
+
+        <div class="sub-tools">
+          <button class="ghost-btn" id="btnOpenPaste">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+            粘贴 SVG 代码
+          </button>
+          <button class="ghost-btn" id="btnResetDefault">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/></svg>
+            重置默认示例
+          </button>
+        </div>
+
+        <!-- 尺寸调节 -->
+        <div class="config-section">
+          <div class="card-title">
+            <span>尺寸调整 (Pixels)</span>
+            <span id="aspectRatioText" style="font-size: 11px;">1:1</span>
+          </div>
+
+          <div class="dimension-row">
+            <div class="input-field">
+              <label class="input-label">宽度</label>
+              <div class="number-input-wrapper">
+                <input type="number" id="inputWidth" class="styled-input" value="128" min="1" max="8192">
+                <span class="input-unit">px</span>
+              </div>
+            </div>
+
+            <button class="ratio-lock-btn locked" id="ratioLockBtn" title="锁定宽高比例">
+              <svg id="lockIcon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+            </button>
+
+            <div class="input-field">
+              <label class="input-label">高度</label>
+              <div class="number-input-wrapper">
+                <input type="number" id="inputHeight" class="styled-input" value="128" min="1" max="8192">
+                <span class="input-unit">px</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- 常用预设 -->
+          <div class="input-field">
+            <label class="input-label">常用尺寸预设</label>
+            <div class="chip-group" id="presetChips">
+              <div class="chip" data-size="16">16px</div>
+              <div class="chip" data-size="32">32px</div>
+              <div class="chip" data-size="48">48px</div>
+              <div class="chip" data-size="64">64px</div>
+              <div class="chip active" data-size="128">128px</div>
+              <div class="chip" data-size="256">256px</div>
+              <div class="chip" data-size="512">512px</div>
+              <div class="chip" data-size="1024">1024px</div>
+            </div>
+          </div>
+
+          <!-- 倍率快捷键 -->
+          <div class="input-field">
+            <div class="input-header-row">
+              <label class="input-label">基准倍率缩放 (<span id="baseSizeTag">128×128</span>)</label>
+              <div class="mini-btn-group">
+                <button class="mini-btn" id="btnHalve" title="在当前尺寸基础上减半 (÷2)">÷ 2</button>
+                <button class="mini-btn" id="btnDouble" title="在当前尺寸基础上翻倍 (×2)">× 2</button>
+              </div>
+            </div>
+            <div class="chip-group" id="scaleChips">
+              <div class="chip" data-scale="0.5">@0.5x</div>
+              <div class="chip active" data-scale="1">@1x</div>
+              <div class="chip" data-scale="2">@2x</div>
+              <div class="chip" data-scale="3">@3x</div>
+              <div class="chip" data-scale="4">@4x</div>
+              <div class="chip" data-scale="8">@8x</div>
+            </div>
+          </div>
+
+          <!-- 背景选择 -->
+          <div class="input-field">
+            <label class="input-label">导出背景底色</label>
+            <div class="segmented-control" id="bgSegments">
+              <button class="segment-btn active" data-bg="transparent">透明</button>
+              <button class="segment-btn" data-bg="#ffffff">纯白</button>
+              <button class="segment-btn" data-bg="#000000">纯黑</button>
+              <button class="segment-btn" data-bg="custom">自定义</button>
+            </div>
+            <div class="custom-color-row" id="customColorRow">
+              <input type="color" id="customColorPicker" class="color-picker" value="#161616">
+              <span style="font-size: 13px; color: var(--text-muted);" id="colorHex">#161616</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- 导出与操作 -->
+        <div class="action-group">
+          <button class="primary-btn" id="btnDownload">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+            下载高清 PNG 图片
+          </button>
+          <button class="secondary-btn" id="btnBatchDownload">批量打包导出全套常用尺寸 (16 ~ 512px)</button>
+        </div>
+      </div>
+
+      <!-- 右侧：实时预览与画板 -->
+      <div class="card">
+        <div class="card-title">
+          <span>实时画布预览</span>
+          <span class="badge" id="renderResBadge">128 × 128 PX</span>
+        </div>
+
+        <div class="preview-container">
+          <div class="preview-box" id="previewBox">
+            <div class="preview-toolbar">
+              <div class="view-mode-toggle">
+                <button class="mode-btn active" id="btnModeFit">适应视图</button>
+                <button class="mode-btn" id="btnModeActual">1:1 实际大小</button>
+              </div>
+              <button class="quick-copy" id="btnCopyClipboard" title="直接复制 PNG 图像至系统剪贴板">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+                复制 PNG
+              </button>
+            </div>
+            
+            <div class="preview-canvas-wrapper fit-mode" id="canvasWrapper">
+              <canvas id="previewCanvas"></canvas>
+            </div>
+          </div>
+
+          <div class="preview-meta">
+            <span id="origSizeText">原图基准: 128 × 128</span>
+            <span id="scaleRatioText">当前倍率: 1.0x (100%)</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 粘贴 SVG 源码的模态窗 -->
+  <div class="modal-overlay" id="pasteModal">
+    <div class="modal">
+      <div class="card-title">
+        <span>粘贴 SVG 源码字符串</span>
+      </div>
+      <textarea id="svgCodeInput" class="svg-textarea" placeholder="在此粘贴 <svg>...</svg> 格式的代码..."></textarea>
+      <div style="display: flex; gap: 10px; justify-content: flex-end;">
+        <button class="ghost-btn" id="btnClosePaste" style="flex: 0; padding: 8px 18px;">取消</button>
+        <button class="primary-btn" id="btnConfirmPaste" style="flex: 0; padding: 8px 24px; height: 38px; font-size: 13px;">解析并应用</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // 默认初始示例 SVG
+    const DEFAULT_SVG = `<svg t="1788958414368" class="icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="5770" width="200" height="200"><path d="M510.944 960c-247.04 0-448-200.96-448-448s200.992-448 448-448c247.008 0 448 200.96 448 448S757.984 960 510.944 960zM510.944 128c-211.744 0-384 172.256-384 384 0 211.744 172.256 384 384 384 211.744 0 384-172.256 384-384C894.944 300.256 722.688 128 510.944 128zM512 773.344c-89.184 0-171.904-40.32-226.912-110.624-10.88-13.92-8.448-34.016 5.472-44.896 13.888-10.912 34.016-8.48 44.928 5.472 42.784 54.688 107.136 86.048 176.512 86.048 70.112 0 134.88-31.904 177.664-87.552 10.784-14.016 30.848-16.672 44.864-5.888 14.016 10.784 16.672 30.88 5.888 44.864C685.408 732.32 602.144 773.344 512 773.344zM368 515.2c-26.528 0-48-21.472-48-48l0-64c0-26.528 21.472-48 48-48s48 21.472 48 48l0 64C416 493.696 394.496 515.2 368 515.2zM656 515.2c-26.496 0-48-21.472-48-48l0-64c0-26.528 21.504-48 48-48s48 21.472 48 48l0 64C704 493.696 682.496 515.2 656 515.2z" fill="#1296db" p-id="5771"></path></svg>`.trim();
+
+    // 全局状态管理
+    const state = {
+      rawSvg: DEFAULT_SVG,
+      svgDoc: null,
+      origWidth: 128,
+      origHeight: 128,
+      targetWidth: 128,
+      targetHeight: 128,
+      aspectRatio: 1.0,
+      isRatioLocked: true,
+      bgColor: 'transparent',
+      filename: 'icon'
+    };
+
+    // DOM 元素引用
+    const dropZone = document.getElementById('dropZone');
+    const fileInput = document.getElementById('fileInput');
+    const inputWidth = document.getElementById('inputWidth');
+    const inputHeight = document.getElementById('inputHeight');
+    const ratioLockBtn = document.getElementById('ratioLockBtn');
+    const previewCanvas = document.getElementById('previewCanvas');
+    const canvasWrapper = document.getElementById('canvasWrapper');
+    const renderResBadge = document.getElementById('renderResBadge');
+    const origSizeText = document.getElementById('origSizeText');
+    const baseSizeTag = document.getElementById('baseSizeTag');
+    const scaleRatioText = document.getElementById('scaleRatioText');
+    const fileInfoText = document.getElementById('fileInfoText');
+    const aspectRatioText = document.getElementById('aspectRatioText');
+    const btnDownload = document.getElementById('btnDownload');
+    const btnBatchDownload = document.getElementById('btnBatchDownload');
+    const btnCopyClipboard = document.getElementById('btnCopyClipboard');
+    const bgSegments = document.getElementById('bgSegments');
+    const customColorRow = document.getElementById('customColorRow');
+    const customColorPicker = document.getElementById('customColorPicker');
+    const colorHex = document.getElementById('colorHex');
+    const themeToggle = document.getElementById('themeToggle');
+    const toast = document.getElementById('toast');
+    const toastMsg = document.getElementById('toastMsg');
+    const pasteModal = document.getElementById('pasteModal');
+    const btnOpenPaste = document.getElementById('btnOpenPaste');
+    const btnClosePaste = document.getElementById('btnClosePaste');
+    const btnConfirmPaste = document.getElementById('btnConfirmPaste');
+    const svgCodeInput = document.getElementById('svgCodeInput');
+    const btnResetDefault = document.getElementById('btnResetDefault');
+    const presetChips = document.getElementById('presetChips');
+    const scaleChips = document.getElementById('scaleChips');
+    const btnHalve = document.getElementById('btnHalve');
+    const btnDouble = document.getElementById('btnDouble');
+    const btnModeFit = document.getElementById('btnModeFit');
+    const btnModeActual = document.getElementById('btnModeActual');
+
+    // Toast 浮动提示
+    let toastTimer = null;
+    function showToast(msg) {
+      toastMsg.textContent = msg;
+      toast.classList.add('show');
+      clearTimeout(toastTimer);
+      toastTimer = setTimeout(() => toast.classList.remove('show'), 2200);
+    }
+
+    // 主题切换
+    themeToggle.addEventListener('click', () => {
+      const current = document.documentElement.getAttribute('data-theme');
+      const next = current === 'dark' ? 'light' : 'dark';
+      document.documentElement.setAttribute('data-theme', next);
+      showToast(`已切换至${next === 'dark' ? '深色' : '浅色'}模式`);
+    });
+
+    // 视图模式切换（自适应 / 1:1 像素）
+    btnModeFit.addEventListener('click', () => {
+      btnModeFit.classList.add('active');
+      btnModeActual.classList.remove('active');
+      canvasWrapper.classList.remove('actual-mode');
+      canvasWrapper.classList.add('fit-mode');
+      showToast('已切换至适应画板视图');
+    });
+
+    btnModeActual.addEventListener('click', () => {
+      btnModeActual.classList.add('active');
+      btnModeFit.classList.remove('active');
+      canvasWrapper.classList.remove('fit-mode');
+      canvasWrapper.classList.add('actual-mode');
+      showToast('已切换至 1:1 实际像素视图 (可滚动查看细节)');
+    });
+
+    // 解析 SVG 数据并计算尺寸
+    function parseSvgData(svgString) {
+      try {
+        const parser = new DOMParser();
+        const doc = parser.parseFromString(svgString, 'image/svg+xml');
+        const svgEl = doc.querySelector('svg');
+
+        if (!svgEl || doc.querySelector('parsererror')) {
+          throw new Error('无效的 SVG 格式');
+        }
+
+        const rawW = svgEl.getAttribute('width');
+        const rawH = svgEl.getAttribute('height');
+        const vb = svgEl.getAttribute('viewBox');
+
+        let vbW = null;
+        let vbH = null;
+
+        if (vb) {
+          const parts = vb.trim().split(/[\s,]+/).map(Number);
+          if (parts.length === 4 && parts[2] > 0 && parts[3] > 0) {
+            vbW = parts[2];
+            vbH = parts[3];
+          }
+        }
+
+        let w = null;
+        let h = null;
+
+        // 过滤含百分比或 em 单位的非标准绝对长度
+        if (rawW && !rawW.includes('%') && !rawW.includes('em') && !rawW.includes('rem')) {
+          const val = parseFloat(rawW);
+          if (!isNaN(val) && val > 0) w = val;
+        }
+
+        if (rawH && !rawH.includes('%') && !rawH.includes('em') && !rawH.includes('rem')) {
+          const val = parseFloat(rawH);
+          if (!isNaN(val) && val > 0) h = val;
+        }
+
+        // 回退逻辑：明确数值 -> viewBox -> 默认 256
+        w = w || vbW || 256;
+        h = h || vbH || 256;
+
+        if (!vb) {
+          svgEl.setAttribute('viewBox', `0 0 ${w} ${h}`);
+        }
+
+        state.rawSvg = svgString;
+        state.svgDoc = doc;
+        state.origWidth = Math.round(w);
+        state.origHeight = Math.round(h);
+        state.aspectRatio = state.origWidth / state.origHeight;
+
+        // 更新界面指示
+        origSizeText.textContent = `原图基准: ${state.origWidth} × ${state.origHeight}`;
+        baseSizeTag.textContent = `${state.origWidth}×${state.origHeight}`;
+        aspectRatioText.textContent = `比例 ${state.origWidth}:${state.origHeight}`;
+
+        // 默认目标尺寸设为原图尺寸
+        state.targetWidth = state.origWidth;
+        state.targetHeight = state.origHeight;
+        inputWidth.value = state.targetWidth;
+        inputHeight.value = state.targetHeight;
+
+        updateChipStates();
+        renderPreview();
+        return true;
+      } catch (err) {
+        showToast('SVG 解析失败，请检查文件语法');
+        return false;
+      }
+    }
+
+    // 核心渲染方法：重写 SVG 尺寸，实现真矢量任意倍率抗锯齿重绘
+    async function renderSvgToCanvas(targetW, targetH, bgColor) {
+      return new Promise((resolve, reject) => {
+        if (!state.svgDoc) return reject('No doc');
+
+        const clonedSvg = state.svgDoc.querySelector('svg').cloneNode(true);
+        clonedSvg.setAttribute('width', targetW);
+        clonedSvg.setAttribute('height', targetH);
+
+        const serialized = new XMLSerializer().serializeToString(clonedSvg);
+        const blob = new Blob([serialized], { type: 'image/svg+xml;charset=utf-8' });
+        const url = URL.createObjectURL(blob);
+
+        const img = new Image();
+        img.onload = () => {
+          const canvas = document.createElement('canvas');
+          canvas.width = targetW;
+          canvas.height = targetH;
+          const ctx = canvas.getContext('2d');
+
+          // 处理背景底色
+          if (bgColor && bgColor !== 'transparent') {
+            ctx.fillStyle = bgColor;
+            ctx.fillRect(0, 0, targetW, targetH);
+          } else {
+            ctx.clearRect(0, 0, targetW, targetH);
+          }
+
+          ctx.drawImage(img, 0, 0, targetW, targetH);
+          URL.revokeObjectURL(url);
+          resolve(canvas);
+        };
+        img.onerror = (e) => {
+          URL.revokeObjectURL(url);
+          reject(e);
+        };
+        img.src = url;
+      });
+    }
+
+    // 更新实时画板
+    async function renderPreview() {
+      try {
+        const rendered = await renderSvgToCanvas(state.targetWidth, state.targetHeight, state.bgColor);
+        previewCanvas.width = state.targetWidth;
+        previewCanvas.height = state.targetHeight;
+        const ctx = previewCanvas.getContext('2d');
+        ctx.clearRect(0, 0, state.targetWidth, state.targetHeight);
+        ctx.drawImage(rendered, 0, 0);
+
+        renderResBadge.textContent = `${state.targetWidth} × ${state.targetHeight} PX`;
+        const scaleVal = (state.targetWidth / state.origWidth);
+        const scalePct = (scaleVal * 100).toFixed(0);
+        scaleRatioText.textContent = `当前倍率: ${scaleVal.toFixed(1)}x (${scalePct}%)`;
+
+        // 触发微光动效反馈
+        renderResBadge.classList.remove('pulse');
+        void renderResBadge.offsetWidth;
+        renderResBadge.classList.add('pulse');
+      } catch (err) {
+        console.error('Preview error:', err);
+      }
+    }
+
+    // 状态更新：同步选中高亮（固定预设与倍率标签）
+    function updateChipStates() {
+      // 更新固定像素标签
+      document.querySelectorAll('#presetChips .chip').forEach(c => {
+        const s = parseInt(c.dataset.size);
+        c.classList.toggle('active', s === state.targetWidth && s === state.targetHeight);
+      });
+
+      // 更新倍率标签
+      const currentScale = state.targetWidth / state.origWidth;
+      document.querySelectorAll('#scaleChips .chip').forEach(c => {
+        const factor = parseFloat(c.dataset.scale);
+        const isMatch = Math.abs(currentScale - factor) < 0.02 && 
+                        Math.abs((state.targetHeight / state.origHeight) - factor) < 0.02;
+        c.classList.toggle('active', isMatch);
+      });
+    }
+
+    // 宽度输入监听
+    inputWidth.addEventListener('input', () => {
+      let w = parseInt(inputWidth.value) || 1;
+      state.targetWidth = w;
+      if (state.isRatioLocked) {
+        state.targetHeight = Math.max(1, Math.round(w / state.aspectRatio));
+        inputHeight.value = state.targetHeight;
+      }
+      updateChipStates();
+      renderPreview();
+    });
+
+    // 高度输入监听
+    inputHeight.addEventListener('input', () => {
+      let h = parseInt(inputHeight.value) || 1;
+      state.targetHeight = h;
+      if (state.isRatioLocked) {
+        state.targetWidth = Math.max(1, Math.round(h * state.aspectRatio));
+        inputWidth.value = state.targetWidth;
+      }
+      updateChipStates();
+      renderPreview();
+    });
+
+    // 宽高比锁定切换
+    ratioLockBtn.addEventListener('click', () => {
+      state.isRatioLocked = !state.isRatioLocked;
+      ratioLockBtn.classList.toggle('locked', state.isRatioLocked);
+      showToast(state.isRatioLocked ? '已锁定宽高比例' : '已解除宽高限制');
+    });
+
+    // 常用固定尺寸点击
+    presetChips.addEventListener('click', (e) => {
+      const chip = e.target.closest('.chip');
+      if (!chip) return;
+      const size = parseInt(chip.dataset.size);
+      state.targetWidth = size;
+      state.targetHeight = state.isRatioLocked ? Math.max(1, Math.round(size / state.aspectRatio)) : size;
+      inputWidth.value = state.targetWidth;
+      inputHeight.value = state.targetHeight;
+      updateChipStates();
+      renderPreview();
+    });
+
+    // 基准倍率快捷缩放点击
+    scaleChips.addEventListener('click', (e) => {
+      const chip = e.target.closest('.chip');
+      if (!chip) return;
+      const factor = parseFloat(chip.dataset.scale);
+      state.targetWidth = Math.max(1, Math.round(state.origWidth * factor));
+      state.targetHeight = Math.max(1, Math.round(state.origHeight * factor));
+      inputWidth.value = state.targetWidth;
+      inputHeight.value = state.targetHeight;
+      updateChipStates();
+      renderPreview();
+      showToast(`已应用 @${factor}x 缩放 (${state.targetWidth} × ${state.targetHeight} px)`);
+    });
+
+    // 在当前尺寸基础上直接减半 (÷2)
+    btnHalve.addEventListener('click', () => {
+      state.targetWidth = Math.max(1, Math.round(state.targetWidth / 2));
+      state.targetHeight = Math.max(1, Math.round(state.targetHeight / 2));
+      inputWidth.value = state.targetWidth;
+      inputHeight.value = state.targetHeight;
+      updateChipStates();
+      renderPreview();
+      showToast(`已减半至 ${state.targetWidth} × ${state.targetHeight} px`);
+    });
+
+    // 在当前尺寸基础上直接翻倍 (×2)
+    btnDouble.addEventListener('click', () => {
+      state.targetWidth = Math.min(8192, Math.round(state.targetWidth * 2));
+      state.targetHeight = Math.min(8192, Math.round(state.targetHeight * 2));
+      inputWidth.value = state.targetWidth;
+      inputHeight.value = state.targetHeight;
+      updateChipStates();
+      renderPreview();
+      showToast(`已翻倍至 ${state.targetWidth} × ${state.targetHeight} px`);
+    });
+
+    // 背景选择分段控制器
+    bgSegments.addEventListener('click', (e) => {
+      const btn = e.target.closest('.segment-btn');
+      if (!btn) return;
+      document.querySelectorAll('#bgSegments .segment-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+
+      const val = btn.dataset.bg;
+      if (val === 'custom') {
+        customColorRow.classList.add('show');
+        state.bgColor = customColorPicker.value;
+      } else {
+        customColorRow.classList.remove('show');
+        state.bgColor = val;
+      }
+      renderPreview();
+    });
+
+    customColorPicker.addEventListener('input', (e) => {
+      state.bgColor = e.target.value;
+      colorHex.textContent = e.target.value;
+      renderPreview();
+    });
+
+    // 单张下载
+    btnDownload.addEventListener('click', async () => {
+      btnDownload.disabled = true;
+      btnDownload.style.opacity = '0.7';
+      try {
+        const canvas = await renderSvgToCanvas(state.targetWidth, state.targetHeight, state.bgColor);
+        const a = document.createElement('a');
+        a.download = `${state.filename}_${state.targetWidth}x${state.targetHeight}.png`;
+        a.href = canvas.toDataURL('image/png');
+        a.click();
+        showToast('PNG 导出成功！');
+      } catch (err) {
+        showToast('导出出错，请稍后重试');
+      } finally {
+        btnDownload.disabled = false;
+        btnDownload.style.opacity = '1';
+      }
+    });
+
+    // 一键批量常用规格
+    btnBatchDownload.addEventListener('click', async () => {
+      const batchSizes = [16, 32, 48, 64, 128, 256, 512];
+      showToast('正在批量生成并导出多尺寸图标...');
+      for (let i = 0; i < batchSizes.length; i++) {
+        const s = batchSizes[i];
+        const h = state.isRatioLocked ? Math.round(s / state.aspectRatio) : s;
+        const canvas = await renderSvgToCanvas(s, h, state.bgColor);
+        const a = document.createElement('a');
+        a.download = `${state.filename}_${s}x${h}.png`;
+        a.href = canvas.toDataURL('image/png');
+        a.click();
+        await new Promise(r => setTimeout(r, 200));
+      }
+      showToast('已完成全套尺寸导出！');
+    });
+
+    // 复制到系统剪贴板
+    btnCopyClipboard.addEventListener('click', async () => {
+      try {
+        const canvas = await renderSvgToCanvas(state.targetWidth, state.targetHeight, state.bgColor);
+        canvas.toBlob(async (blob) => {
+          await navigator.clipboard.write([
+            new ClipboardItem({ 'image/png': blob })
+          ]);
+          showToast('已复制 PNG 至系统剪贴板');
+        });
+      } catch (err) {
+        showToast('复制失败：浏览器暂不支持或未获剪贴板授权');
+      }
+    });
+
+    // 文件拖拽与选择处理
+    dropZone.addEventListener('click', () => fileInput.click());
+
+    dropZone.addEventListener('dragover', (e) => {
+      e.preventDefault();
+      dropZone.classList.add('dragover');
+    });
+
+    ['dragleave', 'dragend'].forEach(evt => {
+      dropZone.addEventListener(evt, () => dropZone.classList.remove('dragover'));
+    });
+
+    dropZone.addEventListener('drop', (e) => {
+      e.preventDefault();
+      dropZone.classList.remove('dragover');
+      if (e.dataTransfer.files.length > 0) {
+        handleFile(e.dataTransfer.files[0]);
+      }
+    });
+
+    fileInput.addEventListener('change', () => {
+      if (fileInput.files.length > 0) {
+        handleFile(fileInput.files[0]);
+      }
+    });
+
+    function handleFile(file) {
+      if (!file.name.endsWith('.svg') && file.type !== 'image/svg+xml') {
+        showToast('请选择有效的 .svg 矢量文件');
+        return;
+      }
+      state.filename = file.name.replace(/\.svg$/i, '');
+      fileInfoText.textContent = file.name;
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        if (parseSvgData(e.target.result)) {
+          showToast('SVG 文件载入成功');
+        }
+      };
+      reader.readAsText(file);
+    }
+
+    // 粘贴代码弹窗逻辑
+    btnOpenPaste.addEventListener('click', () => {
+      svgCodeInput.value = '';
+      pasteModal.classList.add('show');
+      svgCodeInput.focus();
+    });
+
+    btnClosePaste.addEventListener('click', () => pasteModal.classList.remove('show'));
+
+    btnConfirmPaste.addEventListener('click', () => {
+      const code = svgCodeInput.value.trim();
+      if (!code) {
+        showToast('内容不能为空');
+        return;
+      }
+      if (parseSvgData(code)) {
+        state.filename = 'custom_svg';
+        fileInfoText.textContent = '自定义代码';
+        pasteModal.classList.remove('show');
+        showToast('SVG 代码解析成功');
+      }
+    });
+
+    btnResetDefault.addEventListener('click', () => {
+      state.filename = 'icon';
+      fileInfoText.textContent = '默认图标';
+      parseSvgData(DEFAULT_SVG);
+      showToast('已恢复为默认示例');
+    });
+
+    // 启动初始渲染
+    parseSvgData(DEFAULT_SVG);
+  </script>
+</body>
+</html>
