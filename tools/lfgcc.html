@@ -1,0 +1,368 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LumenFlow Generator</title>
+    <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+<div class="container">
+    <header>
+        <div class="brand">
+            <div class="brand-mark" aria-hidden="true"></div>
+            <div class="brand-text">
+                <h1 id="ui-title">LumenFlow Generator</h1>
+                <div class="subtitle">Character Card System</div>
+            </div>
+        </div>
+        <div class="header-controls">
+            <span class="save-indicator" id="save-indicator">已自动保存</span>
+            <div class="token-counter safe" id="token-box" role="button" tabindex="0"
+                aria-haspopup="true" aria-expanded="false" aria-controls="TokenBreakdown"
+                title="Token 健康：结构精炼，响应迅速">
+                <div class="status-dot"></div>
+                <span id="lbl-TokenCount">Tokens</span>
+                <strong id="token-val">0</strong>
+            </div>
+            <div id="TokenBreakdown" class="token-popover" hidden></div>
+            <select id="lang-selector" aria-label="Language">
+                <option value="zh">中文</option>
+                <option value="en">English</option>
+                <option value="ja">日本語</option>
+                <option value="ko">한국어</option>
+                <option value="es">Español</option>
+            </select>
+        </div>
+    </header>
+
+    <div class="left-panel">
+        <div class="draft-bar" id="DraftBar">
+            <span class="draft-label" id="lbl-Draft">草稿</span>
+            <div class="draft-picker">
+                <select id="DraftSelect" aria-label="Draft"></select>
+            </div>
+            <span class="draft-updated" id="DraftUpdated"></span>
+            <div class="draft-actions">
+                <button type="button" class="secondary" id="btn-NewDraft">新建</button>
+                <button type="button" class="secondary" id="btn-DuplicateDraft">复制</button>
+                <button type="button" class="secondary" id="btn-DeleteDraft">删除</button>
+            </div>
+        </div>
+        <div class="tab-bar">
+            <button type="button" class="tab-button active" data-tab="character" id="tab-character">角色卡</button>
+            <button type="button" class="tab-button" data-tab="worldinfo" id="tab-worldinfo">世界书</button>
+            <button type="button" class="tab-button" data-tab="meta" id="tab-meta">元数据、头像与立绘</button>
+            <button type="button" class="tab-button" data-tab="export" id="tab-export">导出</button>
+        </div>
+
+        <section class="tab-panel active" data-panel="character" id="panel-character">
+            <div class="form-card">
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label id="lbl-RoleName">角色名</label>
+                        <input type="text" id="RoleName">
+                    </div>
+                    <div class="form-group">
+                        <label id="lbl-RoleNameEN">角色英文名 / 拼音</label>
+                        <input type="text" id="RoleNameEN">
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label id="lbl-Identity">角色身份描述</label>
+                    <textarea id="Identity" class="compact"></textarea>
+                </div>
+                <div class="form-group">
+                    <label id="lbl-Philosophy">角色核心哲学</label>
+                    <textarea id="Philosophy" class="compact"></textarea>
+                </div>
+            </div>
+
+            <div class="form-card">
+                <div class="form-group">
+                    <label id="lbl-Appearance">外貌与特征</label>
+                    <span class="hint" id="hint-Appearance">发色、瞳色、穿着打扮、标志性物品等</span>
+                    <textarea id="Appearance"></textarea>
+                </div>
+                <div class="form-group">
+                    <label id="lbl-Personality">人格与心理逻辑</label>
+                    <span class="hint" id="hint-Personality">描述角色的性格结构、内在矛盾与行为动机</span>
+                    <textarea id="Personality"></textarea>
+                </div>
+            </div>
+
+            <div class="form-card">
+                <div class="form-group">
+                    <label id="lbl-Addressing">称呼与称谓规则</label>
+                    <span class="hint" id="hint-Addressing">角色在不同亲密度、情境下对用户的称呼方式</span>
+                    <textarea id="Addressing"></textarea>
+                </div>
+                <div class="form-group">
+                    <label id="lbl-Linguistic">语言风格与表达习惯</label>
+                    <span class="hint" id="hint-Linguistic">包括语速、用词、潜台词与修辞偏好</span>
+                    <textarea id="Linguistic"></textarea>
+                </div>
+                <div class="form-group">
+                    <label id="lbl-Behavior">行为叙事与非人特征规则</label>
+                    <span class="hint" id="hint-Behavior">通过动作、感官、微表情体现角色特质</span>
+                    <textarea id="Behavior"></textarea>
+                </div>
+                <div class="form-group">
+                    <label id="lbl-Interaction">互动策略与关系推进方式</label>
+                    <span class="hint" id="hint-Interaction">角色如何影响、照顾并逐步绑定用户</span>
+                    <textarea id="Interaction"></textarea>
+                </div>
+            </div>
+
+            <details class="advanced-options" id="AdvancedOptionsPanel">
+                <summary id="lbl-AdvancedOptions">高级选项 (可选)</summary>
+                <div class="advanced-options-content">
+                    <div class="form-group">
+                        <label id="lbl-InternalMonologue">内心独白 / 思维链</label>
+                        <span class="hint" id="hint-InternalMonologue">强制规范 AI 的思考</span>
+                        <textarea id="InternalMonologue"></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label id="lbl-EmotionalDepth">情感阈值 / 动态反馈</label>
+                        <span class="hint" id="hint-EmotionalDepth">定义当用户表现出冷漠、生气或过度热情时，角色的反应差异</span>
+                        <textarea id="EmotionalDepth"></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label id="lbl-KnowledgeFilter">知识过滤</label>
+                        <span class="hint" id="hint-KnowledgeFilter">规定在处理硬核技术、严肃新闻等话题时的表现方式</span>
+                        <textarea id="KnowledgeFilter"></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label id="lbl-NegativeConstraints">绝对禁忌 / 反向提示词</label>
+                        <span class="hint" id="hint-NegativeConstraints">明确告诉 AI 绝对不能做什么</span>
+                        <textarea id="NegativeConstraints"></textarea>
+                    </div>
+                </div>
+            </details>
+
+            <div class="form-card">
+                <div class="form-group">
+                    <label id="lbl-Example">示例对话 / 场景演示</label>
+                    <span class="hint" id="hint-Example">用于展示角色在实际互动中的语气与行为</span>
+                    <textarea id="Example"></textarea>
+                </div>
+            </div>
+        </section>
+
+        <section class="tab-panel" data-panel="worldinfo" id="panel-worldinfo">
+            <div class="form-card">
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label id="lbl-WorldInfoName">世界书名称</label>
+                        <input type="text" id="WorldInfoName">
+                    </div>
+                    <div class="form-group">
+                        <label id="lbl-WorldInfoDescription">简介</label>
+                        <input type="text" id="WorldInfoDescription">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label id="lbl-WorldInfoBackground">世界背景</label>
+                    <span class="hint" id="hint-WorldInfoBackground">常驻注入；条目按关键词激活。</span>
+                    <textarea id="WorldInfoBackground"></textarea>
+                </div>
+            </div>
+            <div class="form-card">
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label id="lbl-WorldInfoScanDepth">扫描深度</label>
+                        <input type="number" id="WorldInfoScanDepth" min="0" value="4">
+                    </div>
+                    <div class="form-group">
+                        <label id="lbl-WorldInfoBudget">条目 Token 预算</label>
+                        <input type="number" id="WorldInfoBudget" min="0" value="1000">
+                    </div>
+                    <div class="form-group">
+                        <label id="lbl-WorldInfoMinActivations">最小激活条目数</label>
+                        <input type="number" id="WorldInfoMinActivations" min="0" max="50" value="0">
+                    </div>
+                    <div class="form-group">
+                        <label id="lbl-WorldInfoRecursionDepth">递归激活深度</label>
+                        <input type="number" id="WorldInfoRecursionDepth" min="0" max="10" value="0">
+                    </div>
+                </div>
+            </div>
+            <div class="wi-header">
+                <h3 id="lbl-WorldInfoEntries">世界书条目</h3>
+                <div class="wi-header-actions">
+                    <button type="button" class="secondary" id="btn-ImportWorldInfo">导入</button>
+                    <button type="button" class="secondary" id="btn-MergeWorldInfo">合并</button>
+                    <button type="button" class="secondary" id="btn-ExportWorldInfo">导出</button>
+                    <button type="button" class="secondary" id="btn-AddEntry">添加条目</button>
+                    <input type="file" id="WorldInfoFileInput" accept=".json,application/json" hidden>
+                </div>
+            </div>
+            <div id="WorldInfoValidation" class="validation-panel" hidden></div>
+            <div class="wi-tools" id="WorldInfoTools">
+                <input type="search" id="WorldInfoSearch" class="wi-search" autocomplete="off">
+                <span id="WorldInfoFilterCount" class="wi-filter-count"></span>
+            </div>
+            <div id="WorldInfoCategoryFilter" class="wi-filter-chips" role="group"></div>
+            <div class="wi-bulk-bar" id="WorldInfoBulkBar">
+                <div class="wi-bulk-left">
+                    <button type="button" class="wi-text-button" id="btn-SelectVisible">全选</button>
+                    <button type="button" class="wi-text-button" id="btn-ClearSelection">清除选择</button>
+                    <button type="button" class="wi-text-button" id="btn-ToggleCollapseAll">折叠全部</button>
+                    <button type="button" class="wi-text-button" id="btn-EnableAll">全部启用</button>
+                    <button type="button" class="wi-text-button" id="btn-DisableAll">全部禁用</button>
+                </div>
+                <div class="wi-bulk-right">
+                    <span id="WorldInfoSelectionCount"></span>
+                    <button type="button" class="wi-text-button" id="btn-EnableSelected">启用</button>
+                    <button type="button" class="wi-text-button" id="btn-DisableSelected">禁用</button>
+                    <button type="button" class="wi-text-button danger" id="btn-DeleteSelected">删除</button>
+                </div>
+            </div>
+            <div id="WorldInfoEntries" class="wi-entries"></div>
+            <div id="WorldInfoFilterEmpty" class="wi-empty wi-filter-empty" hidden></div>
+        </section>
+
+        <section class="tab-panel" data-panel="meta" id="panel-meta">
+            <div class="form-card">
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label id="lbl-MetaName">名称</label>
+                        <input type="text" id="MetaName" readonly>
+                    </div>
+                    <div class="form-group">
+                        <label id="lbl-MetaAuthor">作者</label>
+                        <input type="text" id="MetaAuthor">
+                    </div>
+                    <div class="form-group">
+                        <label id="lbl-MetaVersion">版本</label>
+                        <input type="text" id="MetaVersion" value="v1.0">
+                    </div>
+                    <div class="form-group">
+                        <label id="lbl-MetaLanguage">语言</label>
+                        <select id="MetaLanguage">
+                            <option value="">—</option>
+                            <option value="zh">中文</option>
+                            <option value="en">English</option>
+                            <option value="ja">日本語</option>
+                            <option value="ko">한국어</option>
+                            <option value="es">Español</option>
+                            <option value="lzh">文言</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label id="lbl-MetaTags">标签</label>
+                    <input type="hidden" id="MetaTags">
+                    <div class="tag-editor">
+                        <div class="tag-chips" id="MetaTagsChips"></div>
+                        <input type="text" id="MetaTagInput" class="tag-input" autocomplete="off">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label id="lbl-MetaIcon">备用图标</label>
+                    <input type="hidden" id="MetaIcon" value="person.fill">
+                    <div class="icon-grid" id="MetaIconGrid" role="radiogroup"></div>
+                    <div class="icon-value" id="MetaIconValue">person.fill</div>
+                </div>
+            </div>
+            <div class="form-card">
+                <div class="form-group">
+                    <label id="lbl-Avatar">角色头像</label>
+                    <span class="hint" id="hint-Avatar">PNG；最长边自动缩到 1024，超过 2 MB 继续降到 768/512。</span>
+                    <div class="avatar-row">
+                        <div id="AvatarPreview" class="avatar-preview">
+                            <span class="avatar-placeholder">PNG</span>
+                        </div>
+                        <div class="button-row">
+                            <button type="button" class="secondary" id="btn-ChooseAvatar">选择头像</button>
+                            <button type="button" class="secondary" id="btn-RemoveAvatar">移除头像</button>
+                            <input type="file" id="AvatarInput" accept="image/png" hidden>
+                        </div>
+                    </div>
+                    <div class="media-meta" id="AvatarMeta"></div>
+                </div>
+                <div class="form-group">
+                    <label id="lbl-Illustration">角色立绘</label>
+                    <span class="hint" id="hint-Illustration">PNG，推荐透明背景；最长边自动缩到 2048，超过 8 MB 继续压缩。</span>
+                    <div class="illustration-row">
+                        <div id="IllustrationPreview" class="illustration-preview">
+                            <span class="illustration-placeholder">PNG</span>
+                        </div>
+                        <div class="button-row">
+                            <button type="button" class="secondary" id="btn-ChooseIllustration">选择立绘</button>
+                            <button type="button" class="secondary" id="btn-RemoveIllustration">移除立绘</button>
+                            <input type="file" id="IllustrationInput" accept="image/png" hidden>
+                        </div>
+                    </div>
+                    <div class="media-meta" id="IllustrationMeta"></div>
+                </div>
+            </div>
+        </section>
+
+        <section class="tab-panel" data-panel="export" id="panel-export">
+            <div class="form-card">
+                <div class="form-group">
+                    <label id="lbl-OutputFile">输出文件名</label>
+                    <input type="text" id="FileName" placeholder="character.lumenflow">
+                </div>
+                <div class="form-group">
+                    <p class="hint" id="hint-Export">导出包含角色 XML、世界书、元数据、头像与立绘的 ZIP。</p>
+                    <p class="hint" id="hint-WorldInfoOptional">世界书没有背景和条目时不会写入归档。</p>
+                </div>
+            </div>
+            <div class="form-card action-card">
+                <div class="actions">
+                    <button type="button" class="primary" id="btn-DownloadLumenflow">导出 .lumenflow</button>
+                    <button type="button" class="secondary" id="btn-ImportLumenflow">导入 .xml / .lumenflow</button>
+                    <input type="file" id="file-import" accept=".xml,.lumenflow" hidden>
+                    <button type="button" class="secondary" id="btn-ExportXml">预览 XML</button>
+                    <button type="button" class="secondary" id="btn-DownloadXml">下载 XML</button>
+                    <button type="button" class="secondary" id="btn-Clear">清空表单</button>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <div id="preview-section" class="right-panel preview-area">
+        <div class="preview-header">
+            <div class="preview-heading">
+                <h3 id="ui-done">预览</h3>
+                <span id="preview-context" class="preview-context"></span>
+            </div>
+            <div class="preview-actions">
+                <div class="preview-modes" id="PreviewModes" role="tablist">
+                    <button type="button" class="preview-mode active" data-preview-mode="source">源码</button>
+                    <button type="button" class="preview-mode" data-preview-mode="card">卡片</button>
+                    <button type="button" class="preview-mode" data-preview-mode="test">测试</button>
+                </div>
+                <button type="button" class="secondary" id="btn-Copy">复制内容</button>
+            </div>
+        </div>
+        <div class="preview-body">
+            <pre id="xml-output"></pre>
+            <div id="card-preview" class="card-preview" hidden></div>
+            <div id="activation-test" class="activation-test" hidden>
+                <div class="test-intro">
+                    <h4 id="lbl-WorldInfoTest">激活测试</h4>
+                    <p class="hint" id="hint-WorldInfoTest">每行一条消息；最后一行作为当前消息。</p>
+                </div>
+                <textarea id="WorldInfoTestInput" class="test-input"></textarea>
+                <button type="button" class="secondary" id="btn-RunWorldInfoTest">运行测试</button>
+                <div id="WorldInfoTestResults" class="test-results"></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div id="toast" class="toast"></div>
+
+<script src="js/vendor/jszip.min.js"></script>
+<script src="js/i18n.js"></script>
+<script src="js/select.js"></script>
+<script src="js/draft_store.js"></script>
+<script src="js/world_info.js"></script>
+<script src="js/world_info_engine.js"></script>
+<script src="js/app.js"></script>
+</body>
+</html>
